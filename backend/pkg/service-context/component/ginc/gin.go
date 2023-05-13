@@ -12,6 +12,11 @@ const (
 	defaultMode = "debug"
 )
 
+type GinComponent interface {
+	GetPort() int
+	GetRouter() *gin.Engine
+}
+
 type Config struct {
 	port    int
 	ginMode string

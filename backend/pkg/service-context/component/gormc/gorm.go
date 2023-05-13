@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	sctx "jetshop/pkg/service-context"
@@ -19,6 +20,10 @@ const (
 	GormDBTypePostgres GormDBType = iota + 1
 	GormDBTypeNotSupported
 )
+
+type GormComponent interface {
+	GetDB() *gorm.DB
+}
 
 type GormOpt struct {
 	dsn                   string
@@ -64,8 +69,8 @@ func (gdb *gormDB) InitFlags() {
 	flag.StringVar(
 		&gdb.dbType,
 		fmt.Sprintf("%sdb-driver", prefix),
-		"mysql",
-		"Database driver (mysql, postgres, sqlite, mssql) - Default mysql",
+		"postgres",
+		"Database driver (postgres) - Default postgres",
 	)
 
 	flag.IntVar(
@@ -106,6 +111,10 @@ func (gdb *gormDB) Activate(_ sctx.ServiceContext) error {
 
 	var err error
 	gdb.db, err = gdb.getDBConn(dbType)
+
+	if err = gdb.db.Use(otelgorm.NewPlugin(otelgorm.WithDBName(gdb.dbType))); err != nil {
+		return err
+	}
 
 	if err != nil {
 		gdb.logger.Error("Cannot connect to database", err.Error())
