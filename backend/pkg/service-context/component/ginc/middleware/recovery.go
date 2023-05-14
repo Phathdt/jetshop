@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	sctx "jetshop/lib/service-context"
+	sctx "jetshop/pkg/service-context"
 )
 
 type CanGetStatusCode interface {

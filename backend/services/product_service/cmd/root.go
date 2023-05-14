@@ -9,13 +9,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"jetshop/common"
-	"jetshop/component/discovery/consul"
-	"jetshop/component/migrator"
-	"jetshop/component/tracing"
-	sctx "jetshop/lib/service-context"
-	"jetshop/lib/service-context/component/ginc"
-	smdlw "jetshop/lib/service-context/component/ginc/middleware"
-	"jetshop/lib/service-context/component/gormc"
+	sctx "jetshop/pkg/service-context"
+	"jetshop/pkg/service-context/component/discovery/consul"
+	"jetshop/pkg/service-context/component/ginc"
+	smdlw "jetshop/pkg/service-context/component/ginc/middleware"
+	"jetshop/pkg/service-context/component/gormc"
+	"jetshop/pkg/service-context/component/migrator"
+	"jetshop/pkg/service-context/component/tracing"
 )
 
 const (

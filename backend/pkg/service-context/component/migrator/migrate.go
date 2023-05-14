@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"flag"
 
-	_ "github.com/lib/pq"
+	_ "github.com/pkg/pq"
 	"github.com/pressly/goose/v3"
-	sctx "jetshop/lib/service-context"
+	sctx "jetshop/pkg/service-context"
 )
 
 const dialect = "postgres"

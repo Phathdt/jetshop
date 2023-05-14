@@ -4,7 +4,7 @@ import (
 	"flag"
 
 	"github.com/gin-gonic/gin"
-	sctx "jetshop/lib/service-context"
+	sctx "jetshop/pkg/service-context"
 )
 
 const (

@@ -10,7 +10,7 @@ import (
 	"go.opentelemetry.io/otel/sdk/resource"
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.12.0"
-	sctx "jetshop/lib/service-context"
+	sctx "jetshop/pkg/service-context"
 )
 
 type tracingClient struct {
