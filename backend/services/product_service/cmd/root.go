@@ -9,16 +9,21 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+	"google.golang.org/grpc"
 	"jetshop/common"
 	sctx "jetshop/pkg/service-context"
 	"jetshop/pkg/service-context/component/discovery/consul"
 	"jetshop/pkg/service-context/component/ginc"
 	smdlw "jetshop/pkg/service-context/component/ginc/middleware"
 	"jetshop/pkg/service-context/component/gormc"
+	"jetshop/pkg/service-context/component/grpcserverc"
 	"jetshop/pkg/service-context/component/migrator"
 	"jetshop/pkg/service-context/component/redisc"
 	"jetshop/pkg/service-context/component/tracing"
 	"jetshop/services/product_service/internal/modules/product/transport/ginproduct"
+	"jetshop/services/product_service/internal/modules/product/transport/productgrpc"
+
+	protos "jetshop/proto/out/proto"
 )
 
 const (
@@ -35,6 +40,7 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithComponent(consul.NewConsulComponent(common.KeyCompConsul, serviceName, version, 3000)),
 		sctx.WithComponent(tracing.NewTracingClient(common.KeyCompJaeger, serviceName)),
 		sctx.WithComponent(migrator.NewMigrator(common.KeyMigrator)),
+		sctx.WithComponent(grpcserverc.NewGrpcServer(common.KeyCompGrpcServer)),
 	)
 }
 
@@ -47,6 +53,11 @@ var rootCmd = &cobra.Command{
 		logger := sctx.GlobalLogger().GetLogger("service")
 
 		time.Sleep(time.Second * 5)
+
+		grpcComp := serviceCtx.MustGet(common.KeyCompGrpcServer).(grpcserverc.GrpcComponent)
+		grpcComp.SetRegisterHdl(func(server *grpc.Server) {
+			protos.RegisterProductServiceServer(server, productgrpc.NewProductGrpcServer(serviceCtx))
+		})
 
 		if err := serviceCtx.Load(); err != nil {
 			logger.Fatal(err)
