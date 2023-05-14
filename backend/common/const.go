@@ -8,4 +8,5 @@ const (
 	KeyCompChapterClient = "chapter-client"
 	KeyCompGrpcServer    = "grpc-server"
 	KeyCompJaeger        = "jaeger"
+	KeyMigrator          = "migrator"
 )

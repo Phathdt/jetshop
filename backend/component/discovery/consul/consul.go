@@ -6,9 +6,9 @@ import (
 	"time"
 
 	consul "github.com/hashicorp/consul/api"
-	"jetshop/pkg/common"
-	"jetshop/pkg/discovery"
-	sctx "jetshop/pkg/service-context"
+	"jetshop/component/common"
+	"jetshop/component/discovery"
+	sctx "jetshop/lib/service-context"
 )
 
 const ttl = time.Second * 5

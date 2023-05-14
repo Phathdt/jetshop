@@ -6,16 +6,16 @@ import (
 	"os"
 	"time"
 
-	"jetshop/common"
-	"jetshop/pkg/discovery/consul"
-	sctx "jetshop/pkg/service-context"
-	"jetshop/pkg/service-context/component/ginc"
-	smdlw "jetshop/pkg/service-context/component/ginc/middleware"
-	"jetshop/pkg/service-context/component/gormc"
-	"jetshop/pkg/tracing"
-
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
+	"jetshop/common"
+	"jetshop/component/discovery/consul"
+	"jetshop/component/migrator"
+	"jetshop/component/tracing"
+	sctx "jetshop/lib/service-context"
+	"jetshop/lib/service-context/component/ginc"
+	smdlw "jetshop/lib/service-context/component/ginc/middleware"
+	"jetshop/lib/service-context/component/gormc"
 )
 
 const (
@@ -30,6 +30,7 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithComponent(gormc.NewGormDB(common.KeyCompGorm, "")),
 		sctx.WithComponent(consul.NewConsulComponent(common.KeyCompConsul, serviceName, version, 3000)),
 		sctx.WithComponent(tracing.NewTracingClient(common.KeyCompJaeger, serviceName)),
+		sctx.WithComponent(migrator.NewMigrator(common.KeyMigrator)),
 	)
 }
 

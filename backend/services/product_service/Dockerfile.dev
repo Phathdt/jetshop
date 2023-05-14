@@ -3,5 +3,6 @@ WORKDIR /
 RUN apk update
 COPY services/product_service/jetshop ./jetshop
 COPY services/product_service/run.sh .
+COPY services/product_service/migrations ./migrations
 
 ENTRYPOINT sh run.sh
