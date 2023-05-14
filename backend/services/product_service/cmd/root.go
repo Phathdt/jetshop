@@ -16,6 +16,7 @@ import (
 	smdlw "jetshop/pkg/service-context/component/ginc/middleware"
 	"jetshop/pkg/service-context/component/gormc"
 	"jetshop/pkg/service-context/component/migrator"
+	"jetshop/pkg/service-context/component/redisc"
 	"jetshop/pkg/service-context/component/tracing"
 	"jetshop/services/product_service/internal/modules/product/transport/ginproduct"
 )
@@ -30,6 +31,7 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithName(serviceName),
 		sctx.WithComponent(ginc.NewGin(common.KeyCompGIN)),
 		sctx.WithComponent(gormc.NewGormDB(common.KeyCompGorm, "")),
+		sctx.WithComponent(redisc.NewRedisc(common.KeyCompRedis)),
 		sctx.WithComponent(consul.NewConsulComponent(common.KeyCompConsul, serviceName, version, 3000)),
 		sctx.WithComponent(tracing.NewTracingClient(common.KeyCompJaeger, serviceName)),
 		sctx.WithComponent(migrator.NewMigrator(common.KeyMigrator)),

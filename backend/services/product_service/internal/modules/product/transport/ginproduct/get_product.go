@@ -8,6 +8,7 @@ import (
 	"jetshop/common"
 	sctx "jetshop/pkg/service-context"
 	"jetshop/pkg/service-context/component/gormc"
+	"jetshop/pkg/service-context/component/redisc"
 	"jetshop/pkg/service-context/component/tracing"
 	"jetshop/pkg/service-context/core"
 	"jetshop/services/product_service/internal/modules/product/business"
@@ -27,9 +28,11 @@ func GetProduct(sc sctx.ServiceContext) gin.HandlerFunc {
 		}
 
 		db := sc.MustGet(common.KeyCompGorm).(gormc.GormComponent)
+		rdClient := sc.MustGet(common.KeyCompRedis).(redisc.RedisComponent)
 
 		store := storage.NewSqlStore(db.GetDB())
-		repo := repository.NewRepo(store)
+		redisStore := storage.NewRedisStore(rdClient.GetClient())
+		repo := repository.NewRepo(redisStore, store)
 		biz := business.NewGetProductBiz(repo)
 
 		book, err := biz.Response(ctx, id)

@@ -5,11 +5,11 @@ import (
 
 	"jetshop/pkg/service-context/component/tracing"
 	"jetshop/pkg/service-context/core"
-	productmodel2 "jetshop/services/product_service/internal/modules/product/model"
+	"jetshop/services/product_service/internal/modules/product/model"
 )
 
 type GetProductRepo interface {
-	GetProduct(ctx context.Context, id int) (*productmodel2.Product, error)
+	GetProduct(ctx context.Context, id int) (*model.Product, error)
 }
 
 type getProductBiz struct {
@@ -20,7 +20,7 @@ func NewGetProductBiz(repo GetProductRepo) *getProductBiz {
 	return &getProductBiz{repo: repo}
 }
 
-func (b *getProductBiz) Response(ctx context.Context, id int) (*productmodel2.Product, error) {
+func (b *getProductBiz) Response(ctx context.Context, id int) (*model.Product, error) {
 	ctx, span := tracing.StartTrace(ctx, "biz.get")
 	defer span.End()
 
@@ -28,7 +28,7 @@ func (b *getProductBiz) Response(ctx context.Context, id int) (*productmodel2.Pr
 
 	if err != nil {
 		return nil, core.ErrInternalServerError.
-			WithError(productmodel2.ErrCannotGetProduct.Error()).
+			WithError(model.ErrCannotGetProduct.Error()).
 			WithDebug(err.Error())
 	}
 

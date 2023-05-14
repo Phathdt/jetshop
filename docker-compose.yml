@@ -9,6 +9,11 @@ services:
       POSTGRES_PASSWORD: 123123123
       POSTGRES_DB: jetshop
 
+  redis-db:
+    image: redis:7.0.5-alpine
+    ports:
+      - "16379:6379"
+
   consul:
     image: consul:1.15
     ports:
@@ -33,5 +38,6 @@ services:
       DB_DSN: ${DB_DSN}
       CONSUL_HOST: consul:8500
       JAEGER_HOST: http://jaeger:14268/api/traces
+      REDIS_URI: redis://redis-db:6379
     ports:
       - "3000:3000"

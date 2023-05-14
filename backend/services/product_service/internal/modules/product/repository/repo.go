@@ -11,17 +11,34 @@ type ProductStorage interface {
 	GetProduct(ctx context.Context, id int) (*model.Product, error)
 }
 
-type repo struct {
-	storage ProductStorage
+type ProductCacheStore interface {
+	GetProduct(ctx context.Context, id int) (*model.Product, error)
+	SetProduct(ctx context.Context, product *model.Product) error
 }
 
-func NewRepo(storage ProductStorage) *repo {
-	return &repo{storage: storage}
+type repo struct {
+	cacheStore ProductCacheStore
+	storage    ProductStorage
+}
+
+func NewRepo(cacheStore ProductCacheStore, storage ProductStorage) *repo {
+	return &repo{cacheStore: cacheStore, storage: storage}
 }
 
 func (r *repo) GetProduct(ctx context.Context, id int) (*model.Product, error) {
 	ctx, span := tracing.StartTrace(ctx, "repository.get")
 	defer span.End()
 
-	return r.storage.GetProduct(ctx, id)
+	if product, _ := r.cacheStore.GetProduct(ctx, id); product != nil {
+		return product, nil
+	}
+
+	product, err := r.storage.GetProduct(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	_ = r.cacheStore.SetProduct(ctx, product)
+
+	return product, nil
 }
