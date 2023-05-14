@@ -1,4 +1,4 @@
-package productmodel
+package model
 
 import "jetshop/pkg/service-context/core"
 

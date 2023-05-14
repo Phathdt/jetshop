@@ -1,4 +1,4 @@
-package postgresql
+package storage
 
 import (
 	"context"
@@ -7,22 +7,22 @@ import (
 	"gorm.io/gorm"
 	"jetshop/pkg/service-context/component/tracing"
 	"jetshop/pkg/service-context/core"
-	"jetshop/services/product_service/internal/modules/productmodel"
+	"jetshop/services/product_service/internal/modules/product/model"
 )
 
-type repo struct {
+type sqlStore struct {
 	db *gorm.DB
 }
 
-func NewRepo(db *gorm.DB) *repo {
-	return &repo{db: db}
+func NewSqlStore(db *gorm.DB) *sqlStore {
+	return &sqlStore{db: db}
 }
 
-func (r *repo) GetProduct(ctx context.Context, id int) (*productmodel.Product, error) {
-	ctx, span := tracing.StartTrace(ctx, "repo.get")
+func (r *sqlStore) GetProduct(ctx context.Context, id int) (*model.Product, error) {
+	ctx, span := tracing.StartTrace(ctx, "storage.get")
 	defer span.End()
 
-	var product productmodel.Product
+	var product model.Product
 
 	if err := r.db.
 		WithContext(ctx).

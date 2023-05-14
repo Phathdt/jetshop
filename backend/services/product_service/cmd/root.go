@@ -17,7 +17,7 @@ import (
 	"jetshop/pkg/service-context/component/gormc"
 	"jetshop/pkg/service-context/component/migrator"
 	"jetshop/pkg/service-context/component/tracing"
-	"jetshop/services/product_service/internal/modules/producttransport/ginproduct"
+	"jetshop/services/product_service/internal/modules/product/transport/ginproduct"
 )
 
 const (

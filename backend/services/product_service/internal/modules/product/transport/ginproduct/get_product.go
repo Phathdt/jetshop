@@ -10,8 +10,9 @@ import (
 	"jetshop/pkg/service-context/component/gormc"
 	"jetshop/pkg/service-context/component/tracing"
 	"jetshop/pkg/service-context/core"
-	"jetshop/services/product_service/internal/modules/productbiz"
-	"jetshop/services/product_service/internal/modules/productrepo/postgresql"
+	"jetshop/services/product_service/internal/modules/product/business"
+	"jetshop/services/product_service/internal/modules/product/repository"
+	"jetshop/services/product_service/internal/modules/product/storage"
 )
 
 func GetProduct(sc sctx.ServiceContext) gin.HandlerFunc {
@@ -27,8 +28,9 @@ func GetProduct(sc sctx.ServiceContext) gin.HandlerFunc {
 
 		db := sc.MustGet(common.KeyCompGorm).(gormc.GormComponent)
 
-		repo := postgresql.NewRepo(db.GetDB())
-		biz := productbiz.NewGetProductBiz(repo)
+		store := storage.NewSqlStore(db.GetDB())
+		repo := repository.NewRepo(store)
+		biz := business.NewGetProductBiz(repo)
 
 		book, err := biz.Response(ctx, id)
 
