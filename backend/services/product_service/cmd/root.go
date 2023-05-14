@@ -6,8 +6,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/gin-gonic/gin"
-	"github.com/spf13/cobra"
 	"jetshop/common"
 	"jetshop/pkg/discovery/consul"
 	sctx "jetshop/pkg/service-context"
@@ -15,10 +13,13 @@ import (
 	smdlw "jetshop/pkg/service-context/component/ginc/middleware"
 	"jetshop/pkg/service-context/component/gormc"
 	"jetshop/pkg/tracing"
+
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/cobra"
 )
 
 const (
-	serviceName = "product-service"
+	serviceName = "product_service"
 	version     = "1.0.0"
 )
 

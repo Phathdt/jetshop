@@ -1,0 +1,11 @@
+version: '3'
+
+dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
+
+tasks:
+  product_service:
+    cmds:
+      - cd backend/services/product_service && GOOS=linux GARCH=amd64 CGO_ENABLED=0 go build -o jetshop main.go
+      - defer: cd backend/services/product_service && rm jetshop
+      - docker-compose build product_service
+      - docker-compose up product_service

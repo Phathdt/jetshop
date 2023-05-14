@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  postgres-db:
+    image: debezium/postgres:14-alpine
+    ports:
+      - "15432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123123123
+      POSTGRES_DB: jetshop
+
+  consul:
+    image: consul:1.15
+    ports:
+      - 8500:8500
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - LOG_LEVEL=debug
+
+  product_service:
+    build:
+      context: ./backend
+      dockerfile: ./services/product_service/Dockerfile.dev
+    environment:
+      APP_ENV: dev
+      DB_DRIVER: postgres
+      DB_DSN: ${DB_DSN}
+      CONSUL_HOST: consul:8500
+      JAEGER_HOST: http://jaeger:14268/api/traces
+    ports:
+      - "3000:3000"
