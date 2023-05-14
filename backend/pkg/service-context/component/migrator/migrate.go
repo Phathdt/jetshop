@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"flag"
 
-	_ "github.com/pkg/pq"
+	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
 	sctx "jetshop/pkg/service-context"
 )

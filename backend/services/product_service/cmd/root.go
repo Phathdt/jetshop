@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"jetshop/common"
 	sctx "jetshop/pkg/service-context"
 	"jetshop/pkg/service-context/component/discovery/consul"
@@ -16,6 +17,7 @@ import (
 	"jetshop/pkg/service-context/component/gormc"
 	"jetshop/pkg/service-context/component/migrator"
 	"jetshop/pkg/service-context/component/tracing"
+	"jetshop/services/product_service/internal/modules/producttransport/ginproduct"
 )
 
 const (
@@ -51,11 +53,17 @@ var rootCmd = &cobra.Command{
 		ginComp := serviceCtx.MustGet(common.KeyCompGIN).(ginc.GinComponent)
 
 		router := ginComp.GetRouter()
-		router.Use(gin.Recovery(), gin.Logger(), smdlw.Recovery(serviceCtx))
+		router.Use(gin.Recovery(), gin.Logger(), smdlw.Recovery(serviceCtx), otelgin.Middleware(serviceName))
 
 		router.GET("/ping", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{"data": "pong"})
 		})
+
+		apiRouter := router.Group("/api")
+		productRouter := apiRouter.Group("/products")
+		{
+			productRouter.GET("/:id", ginproduct.GetProduct(serviceCtx))
+		}
 
 		if err := router.Run(fmt.Sprintf(":%d", ginComp.GetPort())); err != nil {
 			logger.Fatal(err)
