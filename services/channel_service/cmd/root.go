@@ -18,11 +18,10 @@ import (
 	"jetshop/service-context/component/migrator"
 	"jetshop/service-context/component/redisc"
 	"jetshop/service-context/component/tracing"
-	"jetshop/services/product_service/internal/modules/product/transport/ginproduct"
 )
 
 const (
-	serviceName = "product_service"
+	serviceName = "channel_service"
 	version     = "1.0.0"
 )
 
@@ -60,12 +59,6 @@ var rootCmd = &cobra.Command{
 		router.GET("/ping", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{"data": "pong"})
 		})
-
-		apiRouter := router.Group("/api")
-		productRouter := apiRouter.Group("/products")
-		{
-			productRouter.GET("/:id", ginproduct.GetProduct(serviceCtx))
-		}
 
 		if err := router.Run(fmt.Sprintf(":%d", ginComp.GetPort())); err != nil {
 			logger.Fatal(err)

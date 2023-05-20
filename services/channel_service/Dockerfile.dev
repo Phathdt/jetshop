@@ -1,0 +1,8 @@
+FROM alpine:3.16
+WORKDIR /
+RUN apk update
+COPY services/channel_service/jetshop ./jetshop
+COPY services/channel_service/run.sh .
+COPY services/channel_service/migrations ./migrations
+
+ENTRYPOINT sh run.sh

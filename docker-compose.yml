@@ -28,9 +28,9 @@ services:
       - COLLECTOR_OTLP_ENABLED=true
       - LOG_LEVEL=debug
 
-  product_service:
+  channel_service:
     build:
-      dockerfile: ./services/product_service/Dockerfile.dev
+      dockerfile: ./services/channel_service/Dockerfile.dev
     environment:
       APP_ENV: dev
       DB_DRIVER: postgres

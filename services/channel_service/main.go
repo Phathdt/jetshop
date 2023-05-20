@@ -1,6 +1,6 @@
 package main
 
-import "jetshop/services/product_service/cmd"
+import "jetshop/services/channel_service/cmd"
 
 func main() {
 	cmd.Execute()

@@ -3,9 +3,9 @@ version: '3'
 dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
 
 tasks:
-  product_service:
+  channel_service:
     cmds:
-      - cd services/product_service && GOOS=linux GARCH=amd64 CGO_ENABLED=0 go build -o jetshop main.go
-      - defer: cd services/product_service && rm jetshop
-      - docker-compose build product_service
-      - docker-compose up product_service
+      - cd services/channel_service && GOOS=linux GARCH=amd64 CGO_ENABLED=0 go build -o jetshop main.go
+      - defer: cd services/channel_service && rm jetshop
+      - docker-compose build channel_service
+      - docker-compose up channel_service
