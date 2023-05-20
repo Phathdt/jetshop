@@ -19,6 +19,15 @@ message ChannelListHermesCredentialResponse {
   repeated HermesChannelCredential creds = 1;
 }
 
+message ChannelGetHermesCredentialRequest {
+  string channel_code = 1;
+}
+
+message ChannelGetHermesCredentialResponse {
+  HermesChannelCredential cred = 1;
+}
+
 service ChannelService {
   rpc ListHermesChannelCredential(ChannelListHermesCredentialRequest) returns (ChannelListHermesCredentialResponse) {};
+  rpc GetHermesChannelCredential(ChannelGetHermesCredentialRequest) returns (ChannelGetHermesCredentialResponse) {};
 }

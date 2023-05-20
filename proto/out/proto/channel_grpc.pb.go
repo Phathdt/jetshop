@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChannelServiceClient interface {
 	ListHermesChannelCredential(ctx context.Context, in *ChannelListHermesCredentialRequest, opts ...grpc.CallOption) (*ChannelListHermesCredentialResponse, error)
+	GetHermesChannelCredential(ctx context.Context, in *ChannelGetHermesCredentialRequest, opts ...grpc.CallOption) (*ChannelGetHermesCredentialResponse, error)
 }
 
 type channelServiceClient struct {
@@ -42,11 +43,21 @@ func (c *channelServiceClient) ListHermesChannelCredential(ctx context.Context, 
 	return out, nil
 }
 
+func (c *channelServiceClient) GetHermesChannelCredential(ctx context.Context, in *ChannelGetHermesCredentialRequest, opts ...grpc.CallOption) (*ChannelGetHermesCredentialResponse, error) {
+	out := new(ChannelGetHermesCredentialResponse)
+	err := c.cc.Invoke(ctx, "/proto.ChannelService/GetHermesChannelCredential", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChannelServiceServer is the server API for ChannelService service.
 // All implementations should embed UnimplementedChannelServiceServer
 // for forward compatibility
 type ChannelServiceServer interface {
 	ListHermesChannelCredential(context.Context, *ChannelListHermesCredentialRequest) (*ChannelListHermesCredentialResponse, error)
+	GetHermesChannelCredential(context.Context, *ChannelGetHermesCredentialRequest) (*ChannelGetHermesCredentialResponse, error)
 }
 
 // UnimplementedChannelServiceServer should be embedded to have forward compatible implementations.
@@ -55,6 +66,9 @@ type UnimplementedChannelServiceServer struct {
 
 func (UnimplementedChannelServiceServer) ListHermesChannelCredential(context.Context, *ChannelListHermesCredentialRequest) (*ChannelListHermesCredentialResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListHermesChannelCredential not implemented")
+}
+func (UnimplementedChannelServiceServer) GetHermesChannelCredential(context.Context, *ChannelGetHermesCredentialRequest) (*ChannelGetHermesCredentialResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetHermesChannelCredential not implemented")
 }
 
 // UnsafeChannelServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -86,6 +100,24 @@ func _ChannelService_ListHermesChannelCredential_Handler(srv interface{}, ctx co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ChannelService_GetHermesChannelCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelGetHermesCredentialRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChannelServiceServer).GetHermesChannelCredential(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.ChannelService/GetHermesChannelCredential",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChannelServiceServer).GetHermesChannelCredential(ctx, req.(*ChannelGetHermesCredentialRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ChannelService_ServiceDesc is the grpc.ServiceDesc for ChannelService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -96,6 +128,10 @@ var ChannelService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListHermesChannelCredential",
 			Handler:    _ChannelService_ListHermesChannelCredential_Handler,
+		},
+		{
+			MethodName: "GetHermesChannelCredential",
+			Handler:    _ChannelService_GetHermesChannelCredential_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

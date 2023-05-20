@@ -18,6 +18,7 @@ import (
 
 type ChannelClient interface {
 	ListHermesChannelCredential(ctx context.Context, isEnabled bool) ([]*jetshop_proto.HermesChannelCredential, error)
+	GetHermesChannelCredentialByCode(ctx context.Context, channelCode string) (*jetshop_proto.HermesChannelCredential, error)
 }
 
 type channelClient struct {
@@ -84,4 +85,16 @@ func (c *channelClient) ListHermesChannelCredential(ctx context.Context, isEnabl
 	}
 
 	return rs.Creds, nil
+}
+
+func (c *channelClient) GetHermesChannelCredentialByCode(ctx context.Context, channelCode string) (*jetshop_proto.HermesChannelCredential, error) {
+	ctx, span := tracing.AppendTraceIdToOutgoingContext(ctx, "channel-client.get-by-code")
+	defer span.End()
+
+	rs, err := c.client.GetHermesChannelCredential(ctx, &jetshop_proto.ChannelGetHermesCredentialRequest{ChannelCode: channelCode})
+	if err != nil {
+		return nil, err
+	}
+
+	return rs.Cred, nil
 }

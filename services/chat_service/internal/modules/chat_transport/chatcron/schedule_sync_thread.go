@@ -19,11 +19,11 @@ func ScheduleSyncThread(sc sctx.ServiceContext) func() {
 		ctx, span := tracing.StartTrace(ctx, "cron.schedule_sync_thread")
 		defer span.End()
 
-		client := sc.MustGet(common.KeyCompChannelClient).(appgrpc.ChannelClient)
+		channelClient := sc.MustGet(common.KeyCompChannelClient).(appgrpc.ChannelClient)
 		publisher := sc.MustGet(common.KeyCompNatsPub).(watermillapp.Publisher)
 		logger := sctx.GlobalLogger().GetLogger("service")
 
-		biz := chat_biz.NewScheduleSyncThreadBiz(client, publisher, logger)
+		biz := chat_biz.NewScheduleSyncThreadBiz(channelClient, publisher, logger)
 
 		if err := biz.Response(ctx); err != nil {
 			fmt.Println("111111111")

@@ -10,5 +10,5 @@ import (
 func NewRouter(sc sctx.ServiceContext) {
 	c := sc.MustGet(common.KeyCompNatsSub).(watermillapp.Subscriber)
 
-	c.AddNoPublisherHandler("sync_thread", "sync_thread", chatconsumer.UpsertMessageConsumer(sc))
+	c.AddNoPublisherHandler("sync_thread", "sync_thread", chatconsumer.SyncThreadConsumer(sc))
 }

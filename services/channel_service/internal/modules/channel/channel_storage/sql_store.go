@@ -6,15 +6,16 @@ import (
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 	"jetshop/service-context/component/tracing"
+	"jetshop/service-context/core"
 	"jetshop/services/channel_service/internal/modules/channel/channel_model"
 )
 
 type sqlStore struct {
-	Db *gorm.DB
+	db *gorm.DB
 }
 
 func NewSqlStore(db *gorm.DB) *sqlStore {
-	return &sqlStore{Db: db}
+	return &sqlStore{db: db}
 }
 
 func (s *sqlStore) ListChannelCredentials(ctx context.Context, cond map[string]interface{}) ([]channel_model.HermesChannelCredential, error) {
@@ -23,7 +24,7 @@ func (s *sqlStore) ListChannelCredentials(ctx context.Context, cond map[string]i
 
 	var credentials []channel_model.HermesChannelCredential
 
-	db := s.Db.WithContext(ctx).Table(channel_model.HermesChannelCredential{}.TableName()).Where(cond)
+	db := s.db.WithContext(ctx).Table(channel_model.HermesChannelCredential{}.TableName()).Where(cond)
 
 	if err := db.Select("*").
 		Order("id desc").
@@ -32,4 +33,21 @@ func (s *sqlStore) ListChannelCredentials(ctx context.Context, cond map[string]i
 	}
 
 	return credentials, nil
+}
+
+func (s *sqlStore) GetChannelCredentialByCondition(ctx context.Context, cond map[string]interface{}) (*channel_model.HermesChannelCredential, error) {
+	var data channel_model.HermesChannelCredential
+
+	db := s.db.WithContext(ctx).Table(channel_model.HermesChannelCredential{}.TableName())
+
+	result := db.Where(cond).Limit(1).Find(&data)
+	if result.Error != nil {
+		return nil, errors.WithStack(result.Error)
+	}
+
+	if result.RowsAffected == 0 {
+		return nil, core.ErrRecordNotFound
+	}
+
+	return &data, nil
 }
