@@ -54,7 +54,7 @@ var rootCmd = &cobra.Command{
 
 		serviceCtx.MustGet(common.KeyCompGrpcServer).(grpcserverc.GrpcComponent).
 			SetRegisterHdl(func(server *grpc.Server) {
-				jetshop_proto.RegisterFacebookServiceServer(server, channel_grpc.NewChannelGrpcServer(serviceCtx))
+				jetshop_proto.RegisterChannelServiceServer(server, channel_grpc.NewChannelGrpcServer(serviceCtx))
 			})
 
 		ginComp := serviceCtx.MustGet(common.KeyCompGIN).(ginc.GinComponent)

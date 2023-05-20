@@ -19,6 +19,6 @@ message ChannelListHermesCredentialResponse {
   repeated HermesChannelCredential creds = 1;
 }
 
-service FacebookService {
+service ChannelService {
   rpc ListHermesChannelCredential(ChannelListHermesCredentialRequest) returns (ChannelListHermesCredentialResponse) {};
 }

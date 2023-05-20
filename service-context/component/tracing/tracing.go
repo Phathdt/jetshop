@@ -52,7 +52,7 @@ func (t *tracingClient) Activate(sc sctx.ServiceContext) error {
 	)
 
 	otel.SetTracerProvider(t.tp)
-	otel.SetTextMapPropagator(propagation.TraceContext{})
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
 
 	return nil
 }

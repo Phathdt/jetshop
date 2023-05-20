@@ -6,7 +6,7 @@ const (
 	KeyCompGIN           = "gin"
 	KeyCompClerk         = "clerk"
 	KeyCompConsul        = "consul"
-	KeyCompChapterClient = "chapter-client"
+	KeyCompChannelClient = "channel-client"
 	KeyCompGrpcServer    = "grpc-server"
 	KeyCompJaeger        = "jaeger"
 	KeyCron              = "chatcron"

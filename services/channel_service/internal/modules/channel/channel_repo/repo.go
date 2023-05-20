@@ -20,7 +20,7 @@ func NewRepo(store ChannelSqlStore) *repo {
 }
 
 func (r *repo) ListChannelCredentials(ctx context.Context, cond map[string]interface{}) ([]channel_model.HermesChannelCredential, error) {
-	ctx, span := tracing.WrapTraceIdFromIncomingContext(ctx, "repo.list")
+	ctx, span := tracing.StartTrace(ctx, "repo.list")
 	defer span.End()
 
 	return r.store.ListChannelCredentials(ctx, cond)

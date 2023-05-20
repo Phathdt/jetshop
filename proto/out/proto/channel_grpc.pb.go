@@ -18,84 +18,84 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// FacebookServiceClient is the client API for FacebookService service.
+// ChannelServiceClient is the client API for ChannelService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type FacebookServiceClient interface {
+type ChannelServiceClient interface {
 	ListHermesChannelCredential(ctx context.Context, in *ChannelListHermesCredentialRequest, opts ...grpc.CallOption) (*ChannelListHermesCredentialResponse, error)
 }
 
-type facebookServiceClient struct {
+type channelServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewFacebookServiceClient(cc grpc.ClientConnInterface) FacebookServiceClient {
-	return &facebookServiceClient{cc}
+func NewChannelServiceClient(cc grpc.ClientConnInterface) ChannelServiceClient {
+	return &channelServiceClient{cc}
 }
 
-func (c *facebookServiceClient) ListHermesChannelCredential(ctx context.Context, in *ChannelListHermesCredentialRequest, opts ...grpc.CallOption) (*ChannelListHermesCredentialResponse, error) {
+func (c *channelServiceClient) ListHermesChannelCredential(ctx context.Context, in *ChannelListHermesCredentialRequest, opts ...grpc.CallOption) (*ChannelListHermesCredentialResponse, error) {
 	out := new(ChannelListHermesCredentialResponse)
-	err := c.cc.Invoke(ctx, "/proto.FacebookService/ListHermesChannelCredential", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.ChannelService/ListHermesChannelCredential", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// FacebookServiceServer is the server API for FacebookService service.
-// All implementations should embed UnimplementedFacebookServiceServer
+// ChannelServiceServer is the server API for ChannelService service.
+// All implementations should embed UnimplementedChannelServiceServer
 // for forward compatibility
-type FacebookServiceServer interface {
+type ChannelServiceServer interface {
 	ListHermesChannelCredential(context.Context, *ChannelListHermesCredentialRequest) (*ChannelListHermesCredentialResponse, error)
 }
 
-// UnimplementedFacebookServiceServer should be embedded to have forward compatible implementations.
-type UnimplementedFacebookServiceServer struct {
+// UnimplementedChannelServiceServer should be embedded to have forward compatible implementations.
+type UnimplementedChannelServiceServer struct {
 }
 
-func (UnimplementedFacebookServiceServer) ListHermesChannelCredential(context.Context, *ChannelListHermesCredentialRequest) (*ChannelListHermesCredentialResponse, error) {
+func (UnimplementedChannelServiceServer) ListHermesChannelCredential(context.Context, *ChannelListHermesCredentialRequest) (*ChannelListHermesCredentialResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListHermesChannelCredential not implemented")
 }
 
-// UnsafeFacebookServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to FacebookServiceServer will
+// UnsafeChannelServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ChannelServiceServer will
 // result in compilation errors.
-type UnsafeFacebookServiceServer interface {
-	mustEmbedUnimplementedFacebookServiceServer()
+type UnsafeChannelServiceServer interface {
+	mustEmbedUnimplementedChannelServiceServer()
 }
 
-func RegisterFacebookServiceServer(s grpc.ServiceRegistrar, srv FacebookServiceServer) {
-	s.RegisterService(&FacebookService_ServiceDesc, srv)
+func RegisterChannelServiceServer(s grpc.ServiceRegistrar, srv ChannelServiceServer) {
+	s.RegisterService(&ChannelService_ServiceDesc, srv)
 }
 
-func _FacebookService_ListHermesChannelCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChannelService_ListHermesChannelCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ChannelListHermesCredentialRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FacebookServiceServer).ListHermesChannelCredential(ctx, in)
+		return srv.(ChannelServiceServer).ListHermesChannelCredential(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.FacebookService/ListHermesChannelCredential",
+		FullMethod: "/proto.ChannelService/ListHermesChannelCredential",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FacebookServiceServer).ListHermesChannelCredential(ctx, req.(*ChannelListHermesCredentialRequest))
+		return srv.(ChannelServiceServer).ListHermesChannelCredential(ctx, req.(*ChannelListHermesCredentialRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// FacebookService_ServiceDesc is the grpc.ServiceDesc for FacebookService service.
+// ChannelService_ServiceDesc is the grpc.ServiceDesc for ChannelService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var FacebookService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.FacebookService",
-	HandlerType: (*FacebookServiceServer)(nil),
+var ChannelService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.ChannelService",
+	HandlerType: (*ChannelServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "ListHermesChannelCredential",
-			Handler:    _FacebookService_ListHermesChannelCredential_Handler,
+			Handler:    _ChannelService_ListHermesChannelCredential_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

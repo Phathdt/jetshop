@@ -18,12 +18,12 @@ func NewSqlStore(db *gorm.DB) *sqlStore {
 }
 
 func (s *sqlStore) ListChannelCredentials(ctx context.Context, cond map[string]interface{}) ([]channel_model.HermesChannelCredential, error) {
-	ctx, span := tracing.WrapTraceIdFromIncomingContext(ctx, "sql_store.list")
+	ctx, span := tracing.StartTrace(ctx, "sql_store.list")
 	defer span.End()
 
 	var credentials []channel_model.HermesChannelCredential
 
-	db := s.Db.Table(channel_model.HermesChannelCredential{}.TableName()).Where(cond)
+	db := s.Db.WithContext(ctx).Table(channel_model.HermesChannelCredential{}.TableName()).Where(cond)
 
 	if err := db.Select("*").
 		Order("id desc").

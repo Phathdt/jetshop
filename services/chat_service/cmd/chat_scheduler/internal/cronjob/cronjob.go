@@ -10,5 +10,5 @@ import (
 func NewCronjob(sc sctx.ServiceContext) {
 	c := sc.MustGet(common.KeyCron).(cronjob.Cronjob)
 
-	c.Enqueue("* * * * * *", chatcron.SyncThreadScheduler(sc))
+	c.Enqueue("* * * * * *", chatcron.ScheduleSyncThread(sc))
 }

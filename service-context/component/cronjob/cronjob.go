@@ -18,7 +18,6 @@ type cronjob struct {
 }
 
 func NewCronjob(id string) *cronjob {
-	fmt.Println("22222")
 	return &cronjob{id: id, cron: cron.New()}
 }
 

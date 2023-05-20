@@ -6,11 +6,15 @@ import (
 	"jetshop/common"
 	jetshop_proto "jetshop/proto/out/proto"
 	"jetshop/service-context/component/gormc"
+	"jetshop/service-context/component/tracing"
 	"jetshop/services/channel_service/internal/modules/channel/channel_repo"
 	"jetshop/services/channel_service/internal/modules/channel/channel_storage"
 )
 
 func (s *channelGrpcServer) ListHermesChannelCredential(ctx context.Context, request *jetshop_proto.ChannelListHermesCredentialRequest) (*jetshop_proto.ChannelListHermesCredentialResponse, error) {
+	ctx, span := tracing.WrapTraceIdFromIncomingContext(ctx, "grpc.list")
+	defer span.End()
+
 	sc := s.sc
 
 	db := sc.MustGet(common.KeyCompGorm).(gormc.GormComponent).GetDB()

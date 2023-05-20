@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+	"jetshop/appgrpc"
 	"jetshop/common"
 	sctx "jetshop/service-context"
 	"jetshop/service-context/component/cronjob"
@@ -33,6 +34,7 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithComponent(consul.NewConsulComponent(common.KeyCompConsul, serviceName, version, 3000)),
 		sctx.WithComponent(tracing.NewTracingClient(common.KeyCompJaeger, serviceName)),
 		sctx.WithComponent(cronjob.NewCronjob(common.KeyCron)),
+		sctx.WithComponent(appgrpc.NewChannelClient(common.KeyCompChannelClient)),
 	)
 }
 
