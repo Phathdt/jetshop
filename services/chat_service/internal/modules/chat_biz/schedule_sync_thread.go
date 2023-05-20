@@ -2,10 +2,11 @@ package chat_biz
 
 import (
 	"context"
-	"fmt"
 
 	jetshop_proto "jetshop/proto/out/proto"
+	sctx "jetshop/service-context"
 	"jetshop/service-context/component/tracing"
+	"jetshop/service-context/component/watermillapp"
 	"jetshop/service-context/core"
 	"jetshop/services/chat_service/internal/modules/chat_model"
 )
@@ -16,10 +17,12 @@ type scheduleSyncThreadChannelRepo interface {
 
 type scheduleSyncThreadBiz struct {
 	channelRepo scheduleSyncThreadChannelRepo
+	publisher   watermillapp.Publisher
+	logger      sctx.Logger
 }
 
-func NewScheduleSyncThreadBiz(channelRepo scheduleSyncThreadChannelRepo) *scheduleSyncThreadBiz {
-	return &scheduleSyncThreadBiz{channelRepo: channelRepo}
+func NewScheduleSyncThreadBiz(channelRepo scheduleSyncThreadChannelRepo, publisher watermillapp.Publisher, logger sctx.Logger) *scheduleSyncThreadBiz {
+	return &scheduleSyncThreadBiz{channelRepo: channelRepo, publisher: publisher, logger: logger}
 }
 
 func (b scheduleSyncThreadBiz) Response(ctx context.Context) error {
@@ -33,7 +36,9 @@ func (b scheduleSyncThreadBiz) Response(ctx context.Context) error {
 	}
 
 	for _, credential := range credentials {
-		fmt.Println(credential.ChannelCode)
+		if err = b.publisher.Publish("sync_thread", credential.ChannelCode); err != nil {
+			b.logger.Errorln("publish message error = ", err)
+		}
 	}
 
 	return nil

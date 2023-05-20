@@ -12,6 +12,14 @@ services:
     ports:
       - "16379:6379"
 
+  broker:
+    image: bitnami/nats:2.9.15
+    command: nats-server -js
+    ports:
+      - "4222:4222"
+      - "6222:6222"
+      - "8222:8222"
+
   consul:
     image: consul:1.15
     ports:
@@ -47,4 +55,4 @@ services:
       CONSUL_HOST: consul:8500
       JAEGER_HOST: http://jaeger:14268/api/traces
       REDIS_URI: redis://redis-db:6379
-
+      NATS_PUB_URI: ${NATS_URI}

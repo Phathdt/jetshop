@@ -18,6 +18,7 @@ import (
 	smdlw "jetshop/service-context/component/ginc/middleware"
 	"jetshop/service-context/component/gormc"
 	"jetshop/service-context/component/tracing"
+	"jetshop/service-context/component/watermillapp/natspub"
 	cronjob2 "jetshop/services/chat_service/cmd/chat_scheduler/internal/cronjob"
 )
 
@@ -35,6 +36,7 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithComponent(tracing.NewTracingClient(common.KeyCompJaeger, serviceName)),
 		sctx.WithComponent(cronjob.NewCronjob(common.KeyCron)),
 		sctx.WithComponent(appgrpc.NewChannelClient(common.KeyCompChannelClient)),
+		sctx.WithComponent(natspub.NewNatsPub(common.KeyCompNatsPub)),
 	)
 }
 

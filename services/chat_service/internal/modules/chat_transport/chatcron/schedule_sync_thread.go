@@ -8,6 +8,7 @@ import (
 	"jetshop/common"
 	sctx "jetshop/service-context"
 	"jetshop/service-context/component/tracing"
+	"jetshop/service-context/component/watermillapp"
 	"jetshop/services/chat_service/internal/modules/chat_biz"
 )
 
@@ -19,8 +20,10 @@ func ScheduleSyncThread(sc sctx.ServiceContext) func() {
 		defer span.End()
 
 		client := sc.MustGet(common.KeyCompChannelClient).(appgrpc.ChannelClient)
+		publisher := sc.MustGet(common.KeyCompNatsPub).(watermillapp.Publisher)
+		logger := sctx.GlobalLogger().GetLogger("service")
 
-		biz := chat_biz.NewScheduleSyncThreadBiz(client)
+		biz := chat_biz.NewScheduleSyncThreadBiz(client, publisher, logger)
 
 		if err := biz.Response(ctx); err != nil {
 			fmt.Println("111111111")
