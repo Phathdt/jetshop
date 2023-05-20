@@ -9,13 +9,17 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+	"google.golang.org/grpc"
 	"jetshop/common"
+	jetshop_proto "jetshop/proto/out/proto"
 	sctx "jetshop/service-context"
 	"jetshop/service-context/component/discovery/consul"
 	"jetshop/service-context/component/ginc"
 	smdlw "jetshop/service-context/component/ginc/middleware"
 	"jetshop/service-context/component/gormc"
+	"jetshop/service-context/component/grpcserverc"
 	"jetshop/service-context/component/tracing"
+	"jetshop/services/channel_service/internal/modules/channel/channel_stranport/channel_grpc"
 )
 
 const (
@@ -30,6 +34,7 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithComponent(gormc.NewGormDB(common.KeyCompGorm, "")),
 		sctx.WithComponent(consul.NewConsulComponent(common.KeyCompConsul, serviceName, version, 3000)),
 		sctx.WithComponent(tracing.NewTracingClient(common.KeyCompJaeger, serviceName)),
+		sctx.WithComponent(grpcserverc.NewGrpcServer(common.KeyCompGrpcServer)),
 	)
 }
 
@@ -46,6 +51,11 @@ var rootCmd = &cobra.Command{
 		if err := serviceCtx.Load(); err != nil {
 			logger.Fatal(err)
 		}
+
+		serviceCtx.MustGet(common.KeyCompGrpcServer).(grpcserverc.GrpcComponent).
+			SetRegisterHdl(func(server *grpc.Server) {
+				jetshop_proto.RegisterFacebookServiceServer(server, channel_grpc.NewChannelGrpcServer(serviceCtx))
+			})
 
 		ginComp := serviceCtx.MustGet(common.KeyCompGIN).(ginc.GinComponent)
 

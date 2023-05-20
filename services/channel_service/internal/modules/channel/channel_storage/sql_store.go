@@ -5,6 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
+	"jetshop/service-context/component/tracing"
 	"jetshop/services/channel_service/internal/modules/channel/channel_model"
 )
 
@@ -17,6 +18,9 @@ func NewSqlStore(db *gorm.DB) *sqlStore {
 }
 
 func (s *sqlStore) ListChannelCredentials(ctx context.Context, cond map[string]interface{}) ([]channel_model.HermesChannelCredential, error) {
+	ctx, span := tracing.WrapTraceIdFromIncomingContext(ctx, "sql_store.list")
+	defer span.End()
+
 	var credentials []channel_model.HermesChannelCredential
 
 	db := s.Db.Table(channel_model.HermesChannelCredential{}.TableName()).Where(cond)

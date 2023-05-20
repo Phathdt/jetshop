@@ -1,6 +1,9 @@
 package channel_model
 
-import "jetshop/service-context/core"
+import (
+	jetshop_proto "jetshop/proto/out/proto"
+	"jetshop/service-context/core"
+)
 
 type HermesChannelCredential struct {
 	core.SQLModel
@@ -13,4 +16,13 @@ type HermesChannelCredential struct {
 
 func (HermesChannelCredential) TableName() string {
 	return "hermes.hermes_channel_credentials"
+}
+
+func (c *HermesChannelCredential) ToProtoc() *jetshop_proto.HermesChannelCredential {
+	return &jetshop_proto.HermesChannelCredential{
+		ChannelCode:  c.ChannelCode,
+		PlatformCode: c.PlatformCode,
+		IsEnabled:    c.IsEnabled,
+		SellerId:     c.SellerId,
+	}
 }

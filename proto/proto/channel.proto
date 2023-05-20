@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "jetshop_proto/";
+
+message HermesChannelCredential {
+  string channel_code = 1;
+  string platform_code = 2;
+  bool is_enabled = 3;
+  string seller_id = 4;
+}
+
+message ChannelListHermesCredentialRequest {
+  string cond = 1;
+}
+
+message ChannelListHermesCredentialResponse {
+  repeated HermesChannelCredential creds = 1;
+}
+
+service FacebookService {
+  rpc ListHermesChannelCredential(ChannelListHermesCredentialRequest) returns (ChannelListHermesCredentialResponse) {};
+}
