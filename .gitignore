@@ -4,5 +4,5 @@
 !*.*
 
 /.env
-/backend/.idea/
+/.idea/
 **/.DS_Store

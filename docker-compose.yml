@@ -30,7 +30,6 @@ services:
 
   product_service:
     build:
-      context: ./backend
       dockerfile: ./services/product_service/Dockerfile.dev
     environment:
       APP_ENV: dev
