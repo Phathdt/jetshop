@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	serviceName = "channel_service"
+	serviceName = "chat_service"
 	version     = "1.0.0"
 )
 
