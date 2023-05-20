@@ -11,11 +11,13 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"jetshop/common"
 	sctx "jetshop/service-context"
+	"jetshop/service-context/component/cronjob"
 	"jetshop/service-context/component/discovery/consul"
 	"jetshop/service-context/component/ginc"
 	smdlw "jetshop/service-context/component/ginc/middleware"
 	"jetshop/service-context/component/gormc"
 	"jetshop/service-context/component/tracing"
+	cronjob2 "jetshop/services/chat_service/cmd/chat_scheduler/internal/cronjob"
 )
 
 const (
@@ -30,6 +32,7 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithComponent(gormc.NewGormDB(common.KeyCompGorm, "")),
 		sctx.WithComponent(consul.NewConsulComponent(common.KeyCompConsul, serviceName, version, 3000)),
 		sctx.WithComponent(tracing.NewTracingClient(common.KeyCompJaeger, serviceName)),
+		sctx.WithComponent(cronjob.NewCronjob(common.KeyCron)),
 	)
 }
 
@@ -46,6 +49,8 @@ var rootCmd = &cobra.Command{
 		if err := serviceCtx.Load(); err != nil {
 			logger.Fatal(err)
 		}
+
+		cronjob2.NewCronjob(serviceCtx)
 
 		ginComp := serviceCtx.MustGet(common.KeyCompGIN).(ginc.GinComponent)
 
