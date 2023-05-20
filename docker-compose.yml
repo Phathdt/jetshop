@@ -1,5 +1,12 @@
 version: "3.9"
 services:
+  chat_db:
+    image: postgres:15.3-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123123123
+      POSTGRES_DB: chat_db
+
   redis-db:
     image: redis:7.0.5-alpine
     ports:
@@ -30,13 +37,13 @@ services:
       JAEGER_HOST: http://jaeger:14268/api/traces
       REDIS_URI: redis://redis-db:6379
 
-  chat_service:
+  chat_scheduler:
     build:
-      dockerfile: ./services/chat_service/Dockerfile.dev
+      dockerfile: services/chat_service/cmd/chat_scheduler/Dockerfile.dev
     environment:
       APP_ENV: dev
       DB_DRIVER: postgres
-      DB_DSN: ${DB_DSN}
+      DB_DSN: postgresql://postgres:123123123@chat_db/chat_db?sslmode=disable
       CONSUL_HOST: consul:8500
       JAEGER_HOST: http://jaeger:14268/api/traces
       REDIS_URI: redis://redis-db:6379

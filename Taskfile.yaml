@@ -10,9 +10,9 @@ tasks:
       - docker-compose build channel_service
       - docker-compose up channel_service
 
-  chat_service:
+  chat_scheduler:
     cmds:
-      - cd services/chat_service && GOOS=linux GARCH=amd64 CGO_ENABLED=0 go build -o jetshop main.go
+      - cd services/chat_service && GOOS=linux GARCH=amd64 CGO_ENABLED=0 go build -o jetshop cmd/chat_scheduler/main.go
       - defer: cd services/chat_service && rm jetshop
-      - docker-compose build chat_service
-      - docker-compose up chat_service
+      - docker-compose build chat_scheduler
+      - docker-compose up chat_scheduler

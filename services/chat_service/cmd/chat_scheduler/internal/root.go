@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	serviceName = "chat_service"
+	serviceName = "chat_scheduler"
 	version     = "1.0.0"
 )
 
