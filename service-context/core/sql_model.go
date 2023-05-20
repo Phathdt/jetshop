@@ -4,7 +4,7 @@ import "time"
 
 type SQLModel struct {
 	Id        int        `json:"id" gorm:"column:id;" db:"id"`
-	CreatedAt *time.Time `json:"created_at,omitempty" gorm:"column:created_at;"  db:"created_at"`
+	CreatedAt *time.Time `json:"inserted_at,omitempty" gorm:"column:inserted_at;"  db:"inserted_at"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty" gorm:"column:updated_at;"  db:"updated_at"`
 }
 

@@ -38,7 +38,7 @@ func newServiceCtx() sctx.ServiceContext {
 }
 
 var rootCmd = &cobra.Command{
-	Use:   "app",
+	Use:   serviceName,
 	Short: fmt.Sprintf("start %s", serviceName),
 	Run: func(cmd *cobra.Command, args []string) {
 		serviceCtx := newServiceCtx()
