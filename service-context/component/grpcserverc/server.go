@@ -8,9 +8,9 @@ import (
 	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
-	sctx "jetshop/pkg/service-context"
-	"jetshop/pkg/service-context/component/grpcserverc/logging"
-	"jetshop/pkg/service-context/component/grpcserverc/recovermiddleware"
+	sctx "jetshop/service-context"
+	"jetshop/service-context/component/grpcserverc/logging"
+	"jetshop/service-context/component/grpcserverc/recovermiddleware"
 )
 
 type GrpcComponent interface {

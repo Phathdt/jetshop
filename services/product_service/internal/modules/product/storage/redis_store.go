@@ -8,8 +8,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/redis/go-redis/v9"
-	"jetshop/pkg/service-context/component/tracing"
-	"jetshop/pkg/service-context/core"
+	"jetshop/service-context/component/tracing"
+	"jetshop/service-context/core"
 	"jetshop/services/product_service/internal/modules/product/model"
 )
 

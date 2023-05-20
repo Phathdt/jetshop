@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"jetshop/common"
-	"jetshop/pkg/service-context/component/gormc"
-	"jetshop/pkg/service-context/component/redisc"
-	"jetshop/pkg/service-context/component/tracing"
 	protos "jetshop/proto/out/proto"
+	"jetshop/service-context/component/gormc"
+	"jetshop/service-context/component/redisc"
+	"jetshop/service-context/component/tracing"
 	"jetshop/services/product_service/internal/modules/product/repository"
 	"jetshop/services/product_service/internal/modules/product/storage"
 )

@@ -6,7 +6,7 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
-	sctx "jetshop/pkg/service-context"
+	sctx "jetshop/service-context"
 )
 
 const dialect = "postgres"

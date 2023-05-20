@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	sctx "jetshop/pkg/service-context"
+	"jetshop/service-context"
 )
 
 func UnaryServerInterceptor(log sctx.Logger) grpc.UnaryServerInterceptor {

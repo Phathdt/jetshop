@@ -10,8 +10,8 @@ import (
 	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	sctx "jetshop/pkg/service-context"
-	"jetshop/pkg/service-context/component/gormc/dialets"
+	sctx "jetshop/service-context"
+	"jetshop/service-context/component/gormc/dialets"
 )
 
 type GormDBType int

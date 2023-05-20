@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"jetshop/pkg/service-context/component/tracing"
+	"jetshop/service-context/component/tracing"
 	"jetshop/services/product_service/internal/modules/product/model"
 )
 

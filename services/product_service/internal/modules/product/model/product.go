@@ -1,6 +1,8 @@
 package model
 
-import "jetshop/pkg/service-context/core"
+import (
+	"jetshop/service-context/core"
+)
 
 type Product struct {
 	core.SQLModel

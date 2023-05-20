@@ -1,6 +1,8 @@
 package core
 
-import sctx "jetshop/pkg/service-context"
+import (
+	"jetshop/service-context"
+)
 
 func Recover() {
 	if r := recover(); r != nil {

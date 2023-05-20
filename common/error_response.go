@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"jetshop/pkg/service-context/core"
+	"jetshop/service-context/core"
 )
 
 func WriteErrorResponse(c *gin.Context, err error) {

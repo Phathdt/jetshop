@@ -1,7 +1,7 @@
 package productgrpc
 
 import (
-	sctx "jetshop/pkg/service-context"
+	"jetshop/service-context"
 )
 
 type productGrpcServer struct {
