@@ -38,8 +38,6 @@ services:
     build:
       dockerfile: ./services/channel_service/Dockerfile.dev
     environment:
-      APP_ENV: dev
-      DB_DRIVER: postgres
       DB_DSN: ${DB_DSN}
       CONSUL_HOST: consul:8500
       JAEGER_HOST: http://jaeger:14268/api/traces
@@ -49,10 +47,18 @@ services:
     build:
       dockerfile: services/chat_service/cmd/chat_scheduler/Dockerfile.dev
     environment:
-      APP_ENV: dev
-      DB_DRIVER: postgres
       DB_DSN: postgresql://postgres:123123123@chat_db/chat_db?sslmode=disable
       CONSUL_HOST: consul:8500
       JAEGER_HOST: http://jaeger:14268/api/traces
       REDIS_URI: redis://redis-db:6379
       NATS_PUB_URI: ${NATS_URI}
+
+  chat_sync_thread_consumer:
+    build:
+      dockerfile: services/chat_service/cmd/chat_sync_thread_consumer/Dockerfile.dev
+    environment:
+      DB_DSN: postgresql://postgres:123123123@chat_db/chat_db?sslmode=disable
+      CONSUL_HOST: consul:8500
+      JAEGER_HOST: http://jaeger:14268/api/traces
+      REDIS_URI: redis://redis-db:6379
+      NATS_SUB_URI: ${NATS_URI}

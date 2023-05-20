@@ -10,6 +10,7 @@ const (
 	KeyCompGrpcServer    = "grpc-server"
 	KeyCompJaeger        = "jaeger"
 	KeyCompNatsPub       = "nats-pub"
+	KeyCompNatsSub       = "nats-sub"
 	KeyCron              = "chatcron"
 	KeyMigrator          = "migrator"
 )
