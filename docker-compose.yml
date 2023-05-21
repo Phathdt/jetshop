@@ -62,3 +62,6 @@ services:
       JAEGER_HOST: http://jaeger:14268/api/traces
       REDIS_URI: redis://redis-db:6379
       NATS_SUB_URI: ${NATS_URI}
+      HERMES_ENDPOINT: https://dev-hermes-server.onpoint.vn
+      HERMES_CLIENT_ID: ${HERMES_CLIENT_ID}
+      HERMES_CLIENT_SECRET: ${HERMES_CLIENT_SECRET}

@@ -3,7 +3,10 @@ package chat_biz
 import (
 	"context"
 	"fmt"
+	"time"
 
+	"go.opentelemetry.io/otel"
+	"jetshop/integration/hermes"
 	jetshop_proto "jetshop/proto/out/proto"
 	"jetshop/service-context/component/tracing"
 )
@@ -29,7 +32,22 @@ func (b *syncThreadBiz) Response(ctx context.Context, channelCode string) error 
 		return err
 	}
 
-	fmt.Println(cred)
+	if cred.SellerId == "" || cred.PlatformCode != "facebook" {
+		return nil
+	}
+
+	client := hermes.NewClient()
+
+	client.SetTracer(otel.Tracer("hermes"))
+
+	t := time.Now()
+	res, err := client.ListThread(ctx, cred.SellerId, t.UnixMilli(), 100)
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(res)
 
 	return nil
 }
