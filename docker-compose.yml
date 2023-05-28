@@ -6,6 +6,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123123123
       POSTGRES_DB: chat_db
+    ports:
+      - "15432:5432"
 
   redis-db:
     image: redis:7.0.5-alpine
@@ -57,3 +59,9 @@ services:
       HERMES_ENDPOINT: https://dev-hermes-server.onpoint.vn
       HERMES_CLIENT_ID: ${HERMES_CLIENT_ID}
       HERMES_CLIENT_SECRET: ${HERMES_CLIENT_SECRET}
+
+  chat_migrate:
+    build:
+      dockerfile: services/chat_service/cmd/chat_migrate/Dockerfile.dev
+    environment:
+      DB_DSN: postgresql://postgres:123123123@chat_db/chat_db?sslmode=disable

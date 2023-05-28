@@ -23,3 +23,10 @@ tasks:
       - defer: cd services/chat_service && rm jetshop
       - docker-compose build chat_sync_thread_consumer
       - docker-compose up chat_sync_thread_consumer
+
+  chat_migrate:
+    cmds:
+      - cd services/chat_service && GOOS=linux GARCH=amd64 CGO_ENABLED=0 go build -o jetshop cmd/chat_migrate/main.go
+      - defer: cd services/chat_service && rm jetshop
+      - docker-compose build chat_migrate
+      - docker-compose up chat_migrate
