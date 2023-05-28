@@ -12,14 +12,6 @@ services:
     ports:
       - "16379:6379"
 
-  broker:
-    image: bitnami/nats:2.9.15
-    command: nats-server -js
-    ports:
-      - "4222:4222"
-      - "6222:6222"
-      - "8222:8222"
-
   consul:
     image: consul:1.15
     ports:
