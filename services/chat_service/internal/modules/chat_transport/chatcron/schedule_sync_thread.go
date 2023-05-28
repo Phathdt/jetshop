@@ -26,7 +26,6 @@ func ScheduleSyncThread(sc sctx.ServiceContext) func() {
 		biz := chat_biz.NewScheduleSyncThreadBiz(channelClient, publisher, logger)
 
 		if err := biz.Response(ctx); err != nil {
-			fmt.Println("111111111")
 			fmt.Println(err)
 			panic(err)
 		}

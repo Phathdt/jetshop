@@ -1,8 +1,6 @@
 package cronjob
 
 import (
-	"fmt"
-
 	"github.com/robfig/cron"
 	sctx "jetshop/service-context"
 )
@@ -42,6 +40,5 @@ func (c *cronjob) Stop() error {
 }
 
 func (c *cronjob) Enqueue(spec string, handler func()) {
-	fmt.Println("111111")
 	_ = c.cron.AddFunc(spec, handler)
 }
