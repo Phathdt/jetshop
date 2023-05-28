@@ -17,8 +17,9 @@ import (
 	smdlw "jetshop/service-context/component/ginc/middleware"
 	"jetshop/service-context/component/gormc"
 	"jetshop/service-context/component/tracing"
+	"jetshop/service-context/component/watermillapp"
 	"jetshop/service-context/component/watermillapp/natsrouter"
-	"jetshop/services/chat_service/cmd/chat_sync_thread_consumer/internal/router"
+	"jetshop/services/chat_service/internal/modules/chat_transport/chatconsumer"
 )
 
 const (
@@ -52,7 +53,8 @@ var rootCmd = &cobra.Command{
 			logger.Fatal(err)
 		}
 
-		router.NewRouter(serviceCtx)
+		subscriber := serviceCtx.MustGet(common.KeyCompNatsSub).(watermillapp.Subscriber)
+		subscriber.AddNoPublisherHandler("sync_thread", "sync_thread", chatconsumer.SyncThreadConsumer(serviceCtx))
 
 		ginComp := serviceCtx.MustGet(common.KeyCompGIN).(ginc.GinComponent)
 
