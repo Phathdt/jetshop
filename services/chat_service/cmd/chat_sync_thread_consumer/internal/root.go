@@ -18,6 +18,7 @@ import (
 	"jetshop/service-context/component/gormc"
 	"jetshop/service-context/component/tracing"
 	"jetshop/service-context/component/watermillapp"
+	"jetshop/service-context/component/watermillapp/natspub"
 	"jetshop/service-context/component/watermillapp/natsrouter"
 	"jetshop/services/chat_service/internal/modules/chat_transport/chatconsumer"
 )
@@ -36,6 +37,7 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithComponent(tracing.NewTracingClient(common.KeyCompJaeger, serviceName)),
 		sctx.WithComponent(appgrpc.NewChannelClient(common.KeyCompChannelClient)),
 		sctx.WithComponent(natsrouter.NewNatsRouter(common.KeyCompNatsSub)),
+		sctx.WithComponent(natspub.NewNatsPub(common.KeyCompNatsPub)),
 	)
 }
 

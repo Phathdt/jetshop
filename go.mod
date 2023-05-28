@@ -21,6 +21,7 @@ require (
 	github.com/redis/go-redis/extra/redisotel/v9 v9.0.4
 	github.com/redis/go-redis/v9 v9.0.4
 	github.com/robfig/cron v1.2.0
+	github.com/samber/lo v1.38.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.7.0
 	github.com/uptrace/opentelemetry-go-extra/otelgorm v0.2.0

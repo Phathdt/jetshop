@@ -8,7 +8,6 @@ import (
 	"jetshop/service-context/component/tracing"
 	"jetshop/service-context/component/watermillapp"
 	"jetshop/service-context/core"
-	"jetshop/services/chat_service/internal/modules/chat_model"
 )
 
 type scheduleSyncThreadChannelRepo interface {
@@ -32,7 +31,7 @@ func (b scheduleSyncThreadBiz) Response(ctx context.Context) error {
 	credentials, err := b.channelRepo.ListHermesChannelCredential(ctx, true)
 
 	if err != nil {
-		return core.ErrInternalServerError.WithError(chat_model.ErrCannotListHermesChannelCredential.Error())
+		return core.ErrInternalServerError.WithError(err.Error())
 	}
 
 	for _, credential := range credentials {

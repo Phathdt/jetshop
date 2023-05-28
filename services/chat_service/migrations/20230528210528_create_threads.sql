@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE "thread" (
+CREATE TABLE "threads" (
     "id" BIGSERIAL PRIMARY KEY,
     "channel_code" text,
     "platform_thread_id" text,
@@ -22,11 +22,11 @@ CREATE TABLE "thread" (
     "updated_at" timestamp(0) NOT NULL DEFAULT now()
 );
 
-CREATE UNIQUE INDEX ON "thread" ("channel_code","platform_thread_id" );
-CREATE INDEX ON "thread" ("last_message_time" );
+CREATE UNIQUE INDEX ON "threads" ("channel_code","platform_thread_id" );
+CREATE INDEX ON "threads" ("last_message_time" );
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE IF EXISTS "thread";
+DROP TABLE IF EXISTS "threads";
 -- +goose StatementEnd

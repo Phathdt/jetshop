@@ -25,5 +25,5 @@ type Thread struct {
 }
 
 func (t Thread) TableName() string {
-	return "hermes.hermes_conversations"
+	return "threads"
 }
