@@ -52,10 +52,6 @@ func (b *syncThreadBiz) Response(ctx context.Context, channelCode string) error 
 		return err
 	}
 
-	if cred.SellerId == "" || cred.PlatformCode != "facebook" {
-		return nil
-	}
-
 	client := hermes.NewClient()
 
 	client.SetTracer(otel.Tracer("hermes"))

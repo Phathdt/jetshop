@@ -35,8 +35,10 @@ func (b scheduleSyncThreadBiz) Response(ctx context.Context) error {
 	}
 
 	for _, credential := range credentials {
-		if err = b.publisher.Publish("sync_thread", credential.ChannelCode); err != nil {
-			b.logger.Errorln("publish message error = ", err)
+		if credential.SellerId == "" && credential.PlatformCode == "facebook" {
+			if err = b.publisher.Publish("sync_thread", credential.ChannelCode); err != nil {
+				b.logger.Errorln("publish message error = ", err)
+			}
 		}
 	}
 
