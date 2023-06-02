@@ -10,7 +10,6 @@ CREATE TABLE "threads" (
     "customer_avatar_url" text,
     "unread_count" int4 DEFAULT 0,
     "platform_code" text,
-    "seller_id" text,
     "last_message" jsonb,
     "last_message_time" int8,
     "from_type" text,

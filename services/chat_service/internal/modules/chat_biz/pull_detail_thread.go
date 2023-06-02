@@ -51,7 +51,7 @@ func (b *pullDetailThreadBiz) Response(ctx context.Context, channelCode, platfor
 	}
 
 	threads := make([]chat_model.Thread, 1)
-	threads[0] = chat_model.MapperToThread(thread, cred)
+	threads[0] = chat_model.MapperToThread(thread)
 	if err = b.repo.UpsertThread(ctx, threads); err != nil {
 		return err
 	}

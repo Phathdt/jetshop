@@ -5,6 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"jetshop/service-context/component/tracing"
 	"jetshop/services/chat_service/internal/modules/chat_model"
 )
@@ -41,4 +42,29 @@ func (s *sqlStore) ListThread(ctx context.Context, cond map[string]interface{}) 
 	}
 
 	return data, nil
+}
+func (s *sqlStore) UpsertConversation(ctx context.Context, data []chat_model.Thread) error {
+	ctx, span := tracing.StartTrace(ctx, "sql_store.upsert")
+	defer span.End()
+
+	if err := s.db.Clauses(clause.OnConflict{
+		Columns: []clause.Column{{Name: "channel_code"}, {Name: "platform_thread_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{
+			"customer_name",
+			"customer_avatar_url",
+			"unread_count",
+			"last_message",
+			"send_time",
+			"from_type",
+			"last_message_is_auto_reply",
+			"bot_stop_at",
+			"op_source",
+			"op_source_send_time",
+			"updated_at",
+		}),
+	}).Create(&data).Error; err != nil {
+		return errors.WithStack(err)
+	}
+
+	return nil
 }

@@ -2,7 +2,6 @@ package chat_model
 
 import (
 	"jetshop/integration/hermes/response"
-	jetshop_proto "jetshop/proto/out/proto"
 	"jetshop/service-context/core"
 )
 
@@ -16,7 +15,6 @@ type Thread struct {
 	CustomerAvatarUrl      string `json:"customer_avatar_url"`
 	UnreadCount            int    `json:"unread_count"`
 	PlatformCode           string `json:"platform_code"`
-	SellerId               string `json:"seller_id"`
 	LastMessage            string `json:"last_message"`
 	SendTime               int64  `json:"last_message_time"`
 	FromType               string `json:"from_type"`
@@ -30,7 +28,7 @@ func (t Thread) TableName() string {
 	return "threads"
 }
 
-func MapperToThread(thread *response.Thread, cred *jetshop_proto.HermesChannelCredential) Thread {
+func MapperToThread(thread *response.Thread) Thread {
 	return Thread{
 		SQLModel:            *core.NewUpsertWithoutIdSQLModel(),
 		ChannelCode:         thread.ChannelCode,
@@ -41,6 +39,5 @@ func MapperToThread(thread *response.Thread, cred *jetshop_proto.HermesChannelCr
 		CustomerAvatarUrl:   thread.CustomerAvatarUrl,
 		UnreadCount:         thread.UnreadCount,
 		PlatformCode:        thread.Platform,
-		SellerId:            cred.SellerId,
 	}
 }
