@@ -8,6 +8,7 @@ import (
 	"go.opentelemetry.io/otel"
 	"jetshop/integration/hermes"
 	"jetshop/integration/hermes/response"
+	"jetshop/payloads"
 	jetshop_proto "jetshop/proto/out/proto"
 	sctx "jetshop/service-context"
 	"jetshop/service-context/component/tracing"
@@ -91,9 +92,10 @@ func (b *syncThreadBiz) Response(ctx context.Context, channelCode string) error 
 
 	if len(newThreadIds) != 0 {
 		for _, newThreadId := range newThreadIds {
-			data := make(map[string]string)
-			data["channel_code"] = cred.ChannelCode
-			data["platform_thread_id"] = newThreadId
+			data := payloads.PullDetailThreadParams{
+				ChannelCode:      cred.ChannelCode,
+				PlatformThreadId: newThreadId,
+			}
 
 			if err = b.publisher.Publish("detail_thread", data); err != nil {
 				b.logger.Errorln("publish message detail_thread error = ", err)
@@ -103,9 +105,10 @@ func (b *syncThreadBiz) Response(ctx context.Context, channelCode string) error 
 
 	if len(needUpdateThreadIds) != 0 {
 		for _, needUpdateThreadId := range needUpdateThreadIds {
-			data := make(map[string]string)
-			data["channel_code"] = cred.ChannelCode
-			data["platform_thread_id"] = needUpdateThreadId
+			data := payloads.SyncMessageParams{
+				ChannelCode:      cred.ChannelCode,
+				PlatformThreadId: needUpdateThreadId,
+			}
 
 			if err = b.publisher.Publish("sync_message", data); err != nil {
 				b.logger.Errorln("publish message sync_message error = ", err)

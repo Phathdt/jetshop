@@ -17,3 +17,30 @@ func NewSQLModel() SQLModel {
 		UpdatedAt: &now,
 	}
 }
+
+func (m *SQLModel) FullFill() {
+	t := time.Now()
+
+	if m.UpdatedAt == nil {
+		m.UpdatedAt = &t
+	}
+}
+
+func NewUpsertSQLModel(id int) *SQLModel {
+	t := time.Now()
+
+	return &SQLModel{
+		Id:        id,
+		CreatedAt: &t,
+		UpdatedAt: &t,
+	}
+}
+
+func NewUpsertWithoutIdSQLModel() *SQLModel {
+	t := time.Now()
+
+	return &SQLModel{
+		CreatedAt: &t,
+		UpdatedAt: &t,
+	}
+}

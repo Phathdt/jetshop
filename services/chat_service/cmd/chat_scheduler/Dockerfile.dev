@@ -3,6 +3,5 @@ WORKDIR /
 RUN apk update
 COPY services/chat_service/jetshop ./jetshop
 COPY services/chat_service/cmd/chat_scheduler/run.sh .
-# COPY services/chat_service/migrations ./migrations
 
 ENTRYPOINT sh run.sh

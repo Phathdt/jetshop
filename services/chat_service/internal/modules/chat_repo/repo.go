@@ -10,6 +10,7 @@ import (
 type ChatStorage interface {
 	ListThread(ctx context.Context, cond map[string]interface{}) ([]chat_model.Thread, error)
 }
+
 type repo struct {
 	store ChatStorage
 }
@@ -23,4 +24,9 @@ func (r *repo) ListThread(ctx context.Context, cond map[string]interface{}) ([]c
 	defer span.End()
 
 	return r.store.ListThread(ctx, cond)
+}
+
+func (r *repo) UpsertThread(ctx context.Context, data []chat_model.Thread) error {
+	//TODO implement me
+	panic("implement me")
 }

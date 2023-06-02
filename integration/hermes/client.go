@@ -15,7 +15,8 @@ import (
 )
 
 const (
-	listThreadURI = "/api/im/threads"
+	listThreadURI      = "/api/im/threads"
+	getDetailThreadURI = "/api/im/threads/detail"
 )
 
 var (
@@ -34,6 +35,7 @@ func init() {
 type Client interface {
 	SetTracer(tracer trace.Tracer)
 	ListThread(ctx context.Context, sellerId string, startTime int64, pageSize int) (*response.ListThread, error)
+	GetThread(ctx context.Context, sellerId, threadId string) (*response.Thread, error)
 }
 
 type client struct {
@@ -134,6 +136,29 @@ func (c *client) ListThread(ctx context.Context, sellerId string, startTime int6
 		SetContext(ctx).
 		SetQueryParams(data).
 		Do(withAPIName(ctx, "client.list_thread")).
+		Into(&res); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+func (c *client) GetThread(ctx context.Context, sellerId, threadId string) (*response.Thread, error) {
+	data := map[string]string{
+		"seller_id": sellerId,
+		"thread_id": threadId,
+	}
+
+	if err := c.addSign(getDetailThreadURI, data); err != nil {
+		return nil, err
+	}
+
+	var res response.Thread
+
+	if err := c.Get(getDetailThreadURI).
+		SetContext(ctx).
+		SetQueryParams(data).
+		Do(withAPIName(ctx, "client.detail_tread")).
 		Into(&res); err != nil {
 		return nil, err
 	}
