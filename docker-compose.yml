@@ -65,7 +65,7 @@ services:
       REDIS_URI: redis://redis-db:6379
       NATS_SUB_URI: ${NATS_URI}
       NATS_PUB_URI: ${NATS_URI}
-      HERMES_ENDPOINT: https://dev-hermes-server.onpoint.vn
+      HERMES_ENDPOINT: ${HERMES_ENDPOINT}
       HERMES_CLIENT_ID: ${HERMES_CLIENT_ID}
       HERMES_CLIENT_SECRET: ${HERMES_CLIENT_SECRET}
 
@@ -79,9 +79,20 @@ services:
       REDIS_URI: redis://redis-db:6379
       NATS_SUB_URI: ${NATS_URI}
       NATS_PUB_URI: ${NATS_URI}
-      HERMES_ENDPOINT: https://dev-hermes-server.onpoint.vn
+      HERMES_ENDPOINT: ${HERMES_ENDPOINT}
       HERMES_CLIENT_ID: ${HERMES_CLIENT_ID}
       HERMES_CLIENT_SECRET: ${HERMES_CLIENT_SECRET}
+
+  chat_update_thread_consumer:
+    build:
+      dockerfile: services/chat_service/cmd/chat_update_thread_consumer/Dockerfile.dev
+    environment:
+      DB_DSN: postgresql://postgres:123123123@chat_db/chat_db?sslmode=disable
+      CONSUL_HOST: consul:8500
+      JAEGER_HOST: http://jaeger:14268/api/traces
+      REDIS_URI: redis://redis-db:6379
+      NATS_SUB_URI: ${NATS_URI}
+      NATS_PUB_URI: ${NATS_URI}
 
   chat_migrate:
     build:
