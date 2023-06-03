@@ -1,7 +1,7 @@
 package channel_grpc
 
 import (
-	sctx "jetshop/service-context"
+	"jetshop/shared/sctx"
 )
 
 type channelGrpcServer struct {

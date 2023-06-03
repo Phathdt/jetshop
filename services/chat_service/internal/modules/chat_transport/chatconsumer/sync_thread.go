@@ -5,15 +5,15 @@ import (
 	"encoding/json"
 
 	"github.com/ThreeDotsLabs/watermill/message"
-	"jetshop/appgrpc"
-	"jetshop/common"
-	sctx "jetshop/service-context"
-	"jetshop/service-context/component/gormc"
-	"jetshop/service-context/component/tracing"
-	"jetshop/service-context/component/watermillapp"
 	"jetshop/services/chat_service/internal/modules/chat_biz"
 	"jetshop/services/chat_service/internal/modules/chat_repo"
 	"jetshop/services/chat_service/internal/modules/chat_storage"
+	"jetshop/shared/appgrpc"
+	"jetshop/shared/common"
+	"jetshop/shared/sctx"
+	"jetshop/shared/sctx/component/gormc"
+	"jetshop/shared/sctx/component/tracing"
+	"jetshop/shared/sctx/component/watermillapp"
 )
 
 func SyncThreadConsumer(sc sctx.ServiceContext) func(msg *message.Message) error {

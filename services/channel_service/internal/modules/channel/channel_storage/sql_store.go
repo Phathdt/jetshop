@@ -5,9 +5,9 @@ import (
 
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
-	"jetshop/service-context/component/tracing"
-	"jetshop/service-context/core"
 	"jetshop/services/channel_service/internal/modules/channel/channel_model"
+	"jetshop/shared/sctx/component/tracing"
+	"jetshop/shared/sctx/core"
 )
 
 type sqlStore struct {

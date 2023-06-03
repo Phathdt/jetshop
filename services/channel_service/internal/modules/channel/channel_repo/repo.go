@@ -3,8 +3,8 @@ package channel_repo
 import (
 	"context"
 
-	"jetshop/service-context/component/tracing"
 	"jetshop/services/channel_service/internal/modules/channel/channel_model"
+	"jetshop/shared/sctx/component/tracing"
 )
 
 type ChannelSqlStore interface {

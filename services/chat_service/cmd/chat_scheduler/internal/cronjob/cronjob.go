@@ -1,10 +1,10 @@
 package cronjob
 
 import (
-	"jetshop/common"
-	sctx "jetshop/service-context"
-	"jetshop/service-context/component/cronjob"
 	"jetshop/services/chat_service/internal/modules/chat_transport/chatcron"
+	"jetshop/shared/common"
+	"jetshop/shared/sctx"
+	"jetshop/shared/sctx/component/cronjob"
 )
 
 func NewCronjob(sc sctx.ServiceContext) {

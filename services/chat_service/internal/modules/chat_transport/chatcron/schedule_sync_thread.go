@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"jetshop/appgrpc"
-	"jetshop/common"
-	sctx "jetshop/service-context"
-	"jetshop/service-context/component/tracing"
-	"jetshop/service-context/component/watermillapp"
 	"jetshop/services/chat_service/internal/modules/chat_biz"
+	"jetshop/shared/appgrpc"
+	"jetshop/shared/common"
+	"jetshop/shared/sctx"
+	"jetshop/shared/sctx/component/tracing"
+	"jetshop/shared/sctx/component/watermillapp"
 )
 
 func ScheduleSyncThread(sc sctx.ServiceContext) func() {

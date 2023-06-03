@@ -3,11 +3,11 @@ package chat_biz
 import (
 	"context"
 
-	jetshop_proto "jetshop/proto/out/proto"
-	sctx "jetshop/service-context"
-	"jetshop/service-context/component/tracing"
-	"jetshop/service-context/component/watermillapp"
-	"jetshop/service-context/core"
+	"jetshop/shared/proto/out/proto"
+	"jetshop/shared/sctx"
+	"jetshop/shared/sctx/component/tracing"
+	"jetshop/shared/sctx/component/watermillapp"
+	"jetshop/shared/sctx/core"
 )
 
 type scheduleSyncThreadChannelRepo interface {

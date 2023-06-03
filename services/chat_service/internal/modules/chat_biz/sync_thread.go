@@ -6,14 +6,14 @@ import (
 
 	"github.com/samber/lo"
 	"go.opentelemetry.io/otel"
-	"jetshop/integration/hermes"
-	"jetshop/integration/hermes/response"
-	"jetshop/payloads"
-	jetshop_proto "jetshop/proto/out/proto"
-	sctx "jetshop/service-context"
-	"jetshop/service-context/component/tracing"
-	"jetshop/service-context/component/watermillapp"
 	"jetshop/services/chat_service/internal/modules/chat_model"
+	"jetshop/shared/integration/hermes"
+	"jetshop/shared/integration/hermes/response"
+	"jetshop/shared/payloads"
+	"jetshop/shared/proto/out/proto"
+	"jetshop/shared/sctx"
+	"jetshop/shared/sctx/component/tracing"
+	"jetshop/shared/sctx/component/watermillapp"
 )
 
 type syncThreadRepo interface {

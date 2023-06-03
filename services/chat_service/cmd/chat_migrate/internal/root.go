@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"jetshop/common"
-	sctx "jetshop/service-context"
-	"jetshop/service-context/component/migrator"
+	"jetshop/shared/common"
+	"jetshop/shared/sctx"
+	"jetshop/shared/sctx/component/migrator"
 )
 
 const (

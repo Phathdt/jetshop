@@ -1,8 +1,8 @@
 package chat_model
 
 import (
-	"jetshop/integration/hermes/response"
-	"jetshop/service-context/core"
+	"jetshop/shared/integration/hermes/response"
+	"jetshop/shared/sctx/core"
 )
 
 type Thread struct {

@@ -3,8 +3,8 @@ package chat_repo
 import (
 	"context"
 
-	"jetshop/service-context/component/tracing"
 	"jetshop/services/chat_service/internal/modules/chat_model"
+	"jetshop/shared/sctx/component/tracing"
 )
 
 type ChatStorage interface {

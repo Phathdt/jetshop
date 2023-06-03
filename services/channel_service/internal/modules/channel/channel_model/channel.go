@@ -1,6 +1,8 @@
 package channel_model
 
-import "jetshop/service-context/core"
+import (
+	"jetshop/shared/sctx/core"
+)
 
 type Channel struct {
 	core.SQLModel

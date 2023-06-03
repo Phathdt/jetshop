@@ -3,8 +3,8 @@ package channel_biz
 import (
 	"context"
 
-	"jetshop/service-context/core"
 	"jetshop/services/channel_service/internal/modules/channel/channel_model"
+	"jetshop/shared/sctx/core"
 )
 
 type listHermesChannelCredentialRepo interface {

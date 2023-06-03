@@ -1,8 +1,8 @@
 package channel_model
 
 import (
-	jetshop_proto "jetshop/proto/out/proto"
-	"jetshop/service-context/core"
+	"jetshop/shared/proto/out/proto"
+	"jetshop/shared/sctx/core"
 )
 
 type HermesChannelCredential struct {
