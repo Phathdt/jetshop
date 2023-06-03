@@ -7,9 +7,9 @@ import (
 
 	"github.com/imroc/req/v3"
 	"github.com/namsral/flag"
+	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
-	"go.opentelemetry.io/otel/trace"
 	"jetshop/shared/integration/common"
 	"jetshop/shared/integration/hermes/response"
 )
@@ -19,6 +19,10 @@ const (
 	getDetailThreadURI = "/api/im/threads/detail"
 	listMessageURI     = "/api/im/messages"
 )
+
+type apiNameType int
+
+const apiNameKey apiNameType = iota
 
 var (
 	endpoint     = ""
@@ -34,7 +38,6 @@ func init() {
 }
 
 type Client interface {
-	SetTracer(tracer trace.Tracer)
 	ListThread(ctx context.Context, sellerId string, startTime int64, pageSize int) (*response.ListThread, error)
 	GetThread(ctx context.Context, sellerId, threadId string) (*response.Thread, error)
 	ListMessage(ctx context.Context, sellerId, threadId string, startTime int64, pageSize int) (*response.ListMessage, error)
@@ -48,43 +51,12 @@ type client struct {
 }
 
 func NewClient() Client {
-	c := req.C().SetBaseURL(endpoint)
+	tracer := otel.Tracer("hermes")
 
-	if common.ShowLog {
-		c = c.DevMode()
-	}
-
-	return &client{
-		Client:       c,
-		clientId:     ClientId,
-		clientSecret: ClientSecret,
-		helper:       NewHermesHelper(ClientId, ClientSecret),
-	}
-}
-
-func (c *client) addSign(path string, data map[string]string) error {
-	t := time.Now()
-
-	data["client_id"] = c.clientId
-	data["timestamp"] = fmt.Sprintf("%d", t.UnixMilli())
-	data["sign_method"] = "sha256"
-	data["sign"] = c.helper.Sign(data, path, c.clientSecret)
-
-	return nil
-}
-
-type apiNameType int
-
-const apiNameKey apiNameType = iota
-
-func (c *client) SetTracer(tracer trace.Tracer) {
-	c.WrapRoundTripFunc(func(rt req.RoundTripper) req.RoundTripFunc {
+	c := req.C().SetBaseURL(endpoint).WrapRoundTripFunc(func(rt req.RoundTripper) req.RoundTripFunc {
 		return func(req *req.Request) (resp *req.Response, err error) {
-			ctx := req.Context()
-			apiName, ok := ctx.Value(apiNameKey).(string)
-			if !ok {
-				apiName = req.URL.Path
-			}
+			apiName := req.URL.Path
+
 			_, span := tracer.Start(req.Context(), apiName)
 			defer span.End()
 			span.SetAttributes(
@@ -112,8 +84,29 @@ func (c *client) SetTracer(tracer trace.Tracer) {
 			return
 		}
 	})
+
+	if common.ShowLog {
+		c = c.DevMode()
+	}
+
+	return &client{
+		Client:       c,
+		clientId:     ClientId,
+		clientSecret: ClientSecret,
+		helper:       NewHermesHelper(ClientId, ClientSecret),
+	}
 }
 
+func (c *client) addSign(path string, data map[string]string) error {
+	t := time.Now()
+
+	data["client_id"] = c.clientId
+	data["timestamp"] = fmt.Sprintf("%d", t.UnixMilli())
+	data["sign_method"] = "sha256"
+	data["sign"] = c.helper.Sign(data, path, c.clientSecret)
+
+	return nil
+}
 func withAPIName(ctx context.Context, name string) context.Context {
 	if ctx == nil {
 		ctx = context.Background()

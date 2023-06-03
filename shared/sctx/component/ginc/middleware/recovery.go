@@ -11,7 +11,7 @@ type CanGetStatusCode interface {
 	StatusCode() int
 }
 
-func Recovery(serviceCtx sctx.sctx) gin.HandlerFunc {
+func Recovery(serviceCtx sctx.ServiceContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {

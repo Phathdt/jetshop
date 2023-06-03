@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/samber/lo"
-	"go.opentelemetry.io/otel"
 	"jetshop/services/chat_service/internal/modules/chat_model"
 	"jetshop/shared/integration/hermes"
 	"jetshop/shared/integration/hermes/response"
@@ -54,8 +53,6 @@ func (b *syncThreadBiz) Response(ctx context.Context, channelCode string) error 
 	}
 
 	client := hermes.NewClient()
-
-	client.SetTracer(otel.Tracer("hermes"))
 
 	t := time.Now()
 	res, err := client.ListThread(ctx, cred.SellerId, t.UnixMilli(), 100)

@@ -20,7 +20,7 @@ func UnaryServerInterceptor(log sctx.Logger) grpc.UnaryServerInterceptor {
 		if st, ok := status.FromError(err); ok {
 			statusCode = st.Code()
 		}
-		log.Withs(sctx.sctx{
+		log.Withs(sctx.Fields{
 			"protocol":    "grpc",
 			"method":      info.FullMethod,
 			"status_code": int(statusCode),

@@ -6,6 +6,6 @@ import (
 
 func Recover() {
 	if r := recover(); r != nil {
-		sctx.sctx.GlobalLogger().GetLogger("recovered").Errorln(r)
+		sctx.GlobalLogger().GetLogger("recovered").Errorln(r)
 	}
 }

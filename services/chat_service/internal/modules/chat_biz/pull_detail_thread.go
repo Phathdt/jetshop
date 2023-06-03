@@ -3,7 +3,6 @@ package chat_biz
 import (
 	"context"
 
-	"go.opentelemetry.io/otel"
 	"jetshop/services/chat_service/internal/modules/chat_model"
 	"jetshop/shared/integration/hermes"
 	"jetshop/shared/payloads"
@@ -42,8 +41,6 @@ func (b *pullDetailThreadBiz) Response(ctx context.Context, channelCode, platfor
 	}
 
 	client := hermes.NewClient()
-
-	client.SetTracer(otel.Tracer("hermes"))
 
 	thread, err := client.GetThread(ctx, cred.SellerId, platformThreadId)
 	if err != nil {
