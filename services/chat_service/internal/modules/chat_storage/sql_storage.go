@@ -43,8 +43,9 @@ func (s *sqlStore) ListThread(ctx context.Context, cond map[string]interface{}) 
 
 	return data, nil
 }
+
 func (s *sqlStore) UpsertConversation(ctx context.Context, data []chat_model.Thread) error {
-	ctx, span := tracing.StartTrace(ctx, "sql_store.upsert")
+	ctx, span := tracing.StartTrace(ctx, "sql_store.upsert_thread")
 	defer span.End()
 
 	if err := s.db.Clauses(clause.OnConflict{
@@ -60,6 +61,25 @@ func (s *sqlStore) UpsertConversation(ctx context.Context, data []chat_model.Thr
 			"bot_stop_at",
 			"op_source",
 			"op_source_send_time",
+			"updated_at",
+		}),
+	}).Create(&data).Error; err != nil {
+		return errors.WithStack(err)
+	}
+
+	return nil
+}
+
+func (s *sqlStore) UpsertMessage(ctx context.Context, data []chat_model.Message) error {
+	ctx, span := tracing.StartTrace(ctx, "sql_store.upsert_message")
+	defer span.End()
+
+	if err := s.db.Clauses(clause.OnConflict{
+		Columns: []clause.Column{{Name: "platform_thread_id"}, {Name: "platform_message_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{
+			"send_time",
+			"content",
+			"status",
 			"updated_at",
 		}),
 	}).Create(&data).Error; err != nil {

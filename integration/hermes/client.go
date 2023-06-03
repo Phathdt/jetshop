@@ -17,6 +17,7 @@ import (
 const (
 	listThreadURI      = "/api/im/threads"
 	getDetailThreadURI = "/api/im/threads/detail"
+	listMessageURI     = "/api/im/messages"
 )
 
 var (
@@ -36,6 +37,7 @@ type Client interface {
 	SetTracer(tracer trace.Tracer)
 	ListThread(ctx context.Context, sellerId string, startTime int64, pageSize int) (*response.ListThread, error)
 	GetThread(ctx context.Context, sellerId, threadId string) (*response.Thread, error)
+	ListMessage(ctx context.Context, sellerId, threadId string, startTime int64, pageSize int) (*response.ListMessage, error)
 }
 
 type client struct {
@@ -159,6 +161,31 @@ func (c *client) GetThread(ctx context.Context, sellerId, threadId string) (*res
 		SetContext(ctx).
 		SetQueryParams(data).
 		Do(withAPIName(ctx, "client.detail_tread")).
+		Into(&res); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+func (c *client) ListMessage(ctx context.Context, sellerId, threadId string, startTime int64, pageSize int) (*response.ListMessage, error) {
+	data := map[string]string{
+		"seller_id":  sellerId,
+		"thread_id":  threadId,
+		"start_time": fmt.Sprintf("%d", startTime),
+		"page_size":  fmt.Sprintf("%d", pageSize),
+	}
+
+	if err := c.addSign(listMessageURI, data); err != nil {
+		return nil, err
+	}
+
+	var res response.ListMessage
+
+	if err := c.Get(listMessageURI).
+		SetContext(ctx).
+		SetQueryParams(data).
+		Do(withAPIName(ctx, "client.list_message")).
 		Into(&res); err != nil {
 		return nil, err
 	}

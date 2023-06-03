@@ -9,3 +9,8 @@ type SyncMessageParams struct {
 	ChannelCode      string `json:"channel_code"`
 	PlatformThreadId string `json:"platform_thread_id"`
 }
+
+type UpdateThreadParams struct {
+	ChannelCode      string `json:"channel_code"`
+	PlatformThreadId string `json:"platform_thread_id"`
+}

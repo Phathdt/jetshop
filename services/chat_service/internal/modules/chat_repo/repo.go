@@ -10,6 +10,7 @@ import (
 type ChatStorage interface {
 	ListThread(ctx context.Context, cond map[string]interface{}) ([]chat_model.Thread, error)
 	UpsertConversation(ctx context.Context, data []chat_model.Thread) error
+	UpsertMessage(ctx context.Context, data []chat_model.Message) error
 }
 
 type repo struct {
@@ -32,4 +33,11 @@ func (r *repo) UpsertThread(ctx context.Context, data []chat_model.Thread) error
 	defer span.End()
 
 	return r.store.UpsertConversation(ctx, data)
+}
+
+func (r *repo) UpsertMessages(ctx context.Context, data []chat_model.Message) error {
+	ctx, span := tracing.StartTrace(ctx, "repo.upsert")
+	defer span.End()
+
+	return r.store.UpsertMessage(ctx, data)
 }

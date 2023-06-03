@@ -23,6 +23,7 @@ type Thread struct {
 	FromType          string     `json:"from_type"`
 	LastReadMessageId string     `json:"last_read_message_id"`
 }
+
 type ListThread struct {
 	Code int      `json:"code"`
 	Data []Thread `json:"data"`
