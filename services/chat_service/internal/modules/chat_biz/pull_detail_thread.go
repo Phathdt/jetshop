@@ -3,6 +3,7 @@ package chat_biz
 import (
 	"context"
 
+	"jetshop/services/chat_service/internal/modules/chat_mapper"
 	"jetshop/services/chat_service/internal/modules/chat_model"
 	"jetshop/shared/integration/hermes"
 	"jetshop/shared/payloads"
@@ -42,20 +43,26 @@ func (b *pullDetailThreadBiz) Response(ctx context.Context, channelCode, platfor
 
 	client := hermes.NewClient()
 
-	thread, err := client.GetThread(ctx, cred.SellerId, platformThreadId)
+	rs, err := client.GetThread(ctx, cred.SellerId, platformThreadId)
 	if err != nil {
 		return err
 	}
 
 	threads := make([]chat_model.Thread, 1)
-	threads[0] = chat_model.MapperToThread(thread)
+	thread, err := chat_mapper.MapperToThread(rs)
+	if err != nil {
+		return err
+	}
+
+	threads[0] = *thread
+
 	if err = b.repo.UpsertThread(ctx, threads); err != nil {
 		return err
 	}
 
 	data := payloads.SyncMessageParams{
 		ChannelCode:      cred.ChannelCode,
-		PlatformThreadId: thread.ThreadId,
+		PlatformThreadId: rs.ThreadId,
 	}
 
 	if err = b.publisher.Publish("sync_message", data); err != nil {

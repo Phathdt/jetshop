@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"jetshop/services/chat_service/internal/modules/chat_mapper"
 	"jetshop/services/chat_service/internal/modules/chat_model"
 	"jetshop/shared/integration/hermes"
 	"jetshop/shared/payloads"
@@ -51,7 +52,12 @@ func (b *syncMessageBiz) Response(ctx context.Context, channelCode, platformThre
 
 	messages := make([]chat_model.Message, len(rs.Data))
 	for i, m := range rs.Data {
-		messages[i] = chat_model.MapperToMessage(&m)
+		message, err := chat_mapper.MapperToMessage(&m)
+		if err != nil {
+			return err
+		}
+
+		messages[i] = *message
 	}
 
 	if err = b.repo.UpsertMessages(ctx, messages); err != nil {
