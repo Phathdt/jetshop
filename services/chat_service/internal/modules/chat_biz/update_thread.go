@@ -8,6 +8,8 @@ import (
 	"github.com/samber/lo"
 	"jetshop/services/chat_service/internal/modules/chat_enums"
 	"jetshop/services/chat_service/internal/modules/chat_model"
+	"jetshop/shared/sctx"
+	"jetshop/shared/sctx/component/pubsub"
 	"jetshop/shared/sctx/component/tracing"
 )
 
@@ -18,11 +20,13 @@ type UpdateThreadRepo interface {
 }
 
 type updateThreadBiz struct {
-	repo UpdateThreadRepo
+	repo   UpdateThreadRepo
+	pubsub pubsub.Publisher
+	logger sctx.Logger
 }
 
-func NewUpdateThreadBiz(repo UpdateThreadRepo) *updateThreadBiz {
-	return &updateThreadBiz{repo: repo}
+func NewUpdateThreadBiz(repo UpdateThreadRepo, publisher pubsub.Publisher, logger sctx.Logger) *updateThreadBiz {
+	return &updateThreadBiz{repo: repo, pubsub: publisher, logger: logger}
 }
 
 func (b *updateThreadBiz) Response(ctx context.Context, channelCode, platformThreadId string) error {
@@ -54,6 +58,16 @@ func (b *updateThreadBiz) Response(ctx context.Context, channelCode, platformThr
 
 	if err = b.repo.UpdateThread(ctx, []chat_model.Thread{*thread}); err != nil {
 		return err
+	}
+
+	payload := map[string]interface{}{
+		"kind":         "room",
+		"channel_code": channelCode,
+		"data":         map[string]interface{}{},
+	}
+
+	if err = b.pubsub.Publish(ctx, "chat-broadcast", payload); err != nil {
+		b.logger.Errorln("pubsub redis with error =", err)
 	}
 
 	return nil

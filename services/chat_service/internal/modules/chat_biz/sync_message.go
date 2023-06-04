@@ -5,18 +5,19 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/samber/lo"
 	"jetshop/services/chat_service/internal/modules/chat_mapper"
 	"jetshop/services/chat_service/internal/modules/chat_model"
 	"jetshop/shared/integration/hermes"
 	"jetshop/shared/payloads"
 	"jetshop/shared/proto/out/proto"
 	"jetshop/shared/sctx"
+	"jetshop/shared/sctx/component/pubsub"
 	"jetshop/shared/sctx/component/tracing"
 	"jetshop/shared/sctx/component/watermillapp"
 )
 
 type SyncMessageRepo interface {
-	PublishMessage(ctx context.Context, channelCode, threadId string, messages []chat_model.Message) error
 	UpsertMessages(ctx context.Context, data []chat_model.Message) error
 	GetThreadDetail(ctx context.Context, cond map[string]interface{}) (*chat_model.Thread, error)
 }
@@ -28,12 +29,13 @@ type SyncMessageChannelRepo interface {
 type syncMessageBiz struct {
 	repo        SyncMessageRepo
 	channelRepo SyncMessageChannelRepo
+	pubsub      pubsub.Publisher
 	publisher   watermillapp.Publisher
 	logger      sctx.Logger
 }
 
-func NewSyncMessageBiz(repo SyncMessageRepo, channelRepo SyncMessageChannelRepo, publisher watermillapp.Publisher, logger sctx.Logger) *syncMessageBiz {
-	return &syncMessageBiz{repo: repo, channelRepo: channelRepo, publisher: publisher, logger: logger}
+func NewSyncMessageBiz(repo SyncMessageRepo, channelRepo SyncMessageChannelRepo, pubsub pubsub.Publisher, publisher watermillapp.Publisher, logger sctx.Logger) *syncMessageBiz {
+	return &syncMessageBiz{repo: repo, channelRepo: channelRepo, pubsub: pubsub, publisher: publisher, logger: logger}
 }
 
 func (b *syncMessageBiz) Response(ctx context.Context, channelCode, platformThreadId string) error {
@@ -81,8 +83,19 @@ func (b *syncMessageBiz) Response(ctx context.Context, channelCode, platformThre
 		return err
 	}
 
-	if err = b.repo.PublishMessage(ctx, channelCode, fmt.Sprintf("%d", thread.Id), messages); err != nil {
-		return err
+	payload := map[string]interface{}{
+		"kind":         "messages",
+		"channel_code": channelCode,
+		"data": map[string]interface{}{
+			"conversation_id": fmt.Printf("%d", thread.Id),
+			"messages": lo.Map(messages, func(m chat_model.Message, index int) chat_model.ClientMessage {
+				return m.ToClient()
+			}),
+		},
+	}
+
+	if err = b.pubsub.Publish(ctx, "chat-broadcast", payload); err != nil {
+		b.logger.Errorln("pubsub redis with error =", err)
 	}
 
 	return nil

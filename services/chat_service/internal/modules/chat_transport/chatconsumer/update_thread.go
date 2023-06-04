@@ -12,6 +12,7 @@ import (
 	"jetshop/shared/payloads"
 	"jetshop/shared/sctx"
 	"jetshop/shared/sctx/component/gormc"
+	"jetshop/shared/sctx/component/pubsub"
 	"jetshop/shared/sctx/component/tracing"
 )
 
@@ -28,11 +29,14 @@ func UpdateThread(sc sctx.ServiceContext) func(msg *message.Message) error {
 			return err
 		}
 
+		logger := sctx.GlobalLogger().GetLogger("service")
+		ps := sc.MustGet(common.KeyCompRedisPubsub).(pubsub.Publisher)
+
 		db := sc.MustGet(common.KeyCompGorm).(gormc.GormComponent).GetDB()
 		store := chat_storage.NewSqlStore(db)
 		repo := chat_repo.NewRepo(store)
 
-		biz := chat_biz.NewUpdateThreadBiz(repo)
+		biz := chat_biz.NewUpdateThreadBiz(repo, ps, logger)
 
 		if err := biz.Response(ctx, payload.ChannelCode, payload.PlatformThreadId); err != nil {
 			return err

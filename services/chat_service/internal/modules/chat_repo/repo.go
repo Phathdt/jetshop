@@ -16,17 +16,8 @@ type ChatStorage interface {
 	ListMessage(ctx context.Context, cond map[string]interface{}) ([]chat_model.Message, error)
 }
 
-type ChatRedisStorage interface {
-	PublishMessage(ctx context.Context, channelCode, threadId string, messages []chat_model.Message) error
-}
-
 type repo struct {
-	store   ChatStorage
-	rdStore ChatRedisStorage
-}
-
-func (r *repo) SetRdStore(rdStore ChatRedisStorage) {
-	r.rdStore = rdStore
+	store ChatStorage
 }
 
 func (r *repo) UpdateThread(ctx context.Context, data []chat_model.Thread) error {
@@ -73,11 +64,4 @@ func (r *repo) ListMessage(ctx context.Context, cond map[string]interface{}) ([]
 	defer span.End()
 
 	return r.store.ListMessage(ctx, cond)
-}
-
-func (r *repo) PublishMessage(ctx context.Context, channelCode, threadId string, messages []chat_model.Message) error {
-	ctx, span := tracing.StartTrace(ctx, "repo.publish_messages")
-	defer span.End()
-
-	return r.rdStore.PublishMessage(ctx, channelCode, threadId, messages)
 }

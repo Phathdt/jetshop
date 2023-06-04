@@ -17,7 +17,7 @@ import (
 	"jetshop/shared/sctx/component/ginc"
 	smdlw "jetshop/shared/sctx/component/ginc/middleware"
 	"jetshop/shared/sctx/component/gormc"
-	"jetshop/shared/sctx/component/redisc"
+	"jetshop/shared/sctx/component/pubsub/redispub"
 	"jetshop/shared/sctx/component/tracing"
 	"jetshop/shared/sctx/component/watermillapp"
 	"jetshop/shared/sctx/component/watermillapp/natspub"
@@ -39,7 +39,7 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithComponent(appgrpc.NewChannelClient(common.KeyCompChannelClient)),
 		sctx.WithComponent(natsrouter.NewNatsRouter(common.KeyCompNatsSub)),
 		sctx.WithComponent(natspub.NewNatsPub(common.KeyCompNatsPub)),
-		sctx.WithComponent(redisc.NewRedisc(common.KeyCompRedis)),
+		sctx.WithComponent(redispub.NewRedisPub(common.KeyCompRedisPubsub)),
 	)
 }
 

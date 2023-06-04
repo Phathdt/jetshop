@@ -1,7 +1,8 @@
-package redisc
+package redispub
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/redis/go-redis/extra/redisotel/v9"
 	"github.com/redis/go-redis/v9"
@@ -9,11 +10,7 @@ import (
 	"jetshop/shared/sctx/component/common"
 )
 
-type RedisComponent interface {
-	GetClient() *redis.Client
-}
-
-type redisc struct {
+type redisPub struct {
 	id        string
 	client    *redis.Client
 	logger    sctx.Logger
@@ -22,21 +19,21 @@ type redisc struct {
 	maxIde    int
 }
 
-func NewRedisc(id string) *redisc {
-	return &redisc{id: id}
+func NewRedisPub(id string) *redisPub {
+	return &redisPub{id: id}
 }
 
-func (r *redisc) ID() string {
+func (r *redisPub) ID() string {
 	return r.id
 }
 
-func (r *redisc) InitFlags() {
+func (r *redisPub) InitFlags() {
 	r.redisUri = common.RedisUri
 	r.maxActive = common.MaxActive
 	r.maxIde = common.MaxIde
 }
 
-func (r *redisc) Activate(sc sctx.ServiceContext) error {
+func (r *redisPub) Activate(sc sctx.ServiceContext) error {
 	r.logger = sctx.GlobalLogger().GetLogger(r.id)
 	r.logger.Info("Connecting to Redis at ", r.redisUri, "...")
 
@@ -73,7 +70,7 @@ func (r *redisc) Activate(sc sctx.ServiceContext) error {
 	return nil
 }
 
-func (r *redisc) Stop() error {
+func (r *redisPub) Stop() error {
 	if err := r.client.Close(); err != nil {
 		return err
 	}
@@ -81,6 +78,17 @@ func (r *redisc) Stop() error {
 	return nil
 }
 
-func (r *redisc) GetClient() *redis.Client {
-	return r.client
+func (r *redisPub) Publish(ctx context.Context, topic string, data interface{}) error {
+	payload, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+
+	if err = r.client.Publish(ctx, topic, payload).Err(); err != nil {
+		return err
+	}
+
+	r.logger.Infof("redis pubsub message = %+v\n", string(payload))
+
+	return nil
 }
