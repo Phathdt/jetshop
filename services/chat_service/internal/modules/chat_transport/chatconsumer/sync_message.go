@@ -13,6 +13,7 @@ import (
 	"jetshop/shared/payloads"
 	"jetshop/shared/sctx"
 	"jetshop/shared/sctx/component/gormc"
+	"jetshop/shared/sctx/component/redisc"
 	"jetshop/shared/sctx/component/tracing"
 	"jetshop/shared/sctx/component/watermillapp"
 )
@@ -36,7 +37,12 @@ func SyncMessageConsumer(sc sctx.ServiceContext) func(msg *message.Message) erro
 
 		db := sc.MustGet(common.KeyCompGorm).(gormc.GormComponent).GetDB()
 		store := chat_storage.NewSqlStore(db)
+
+		rdClient := sc.MustGet(common.KeyCompRedis).(redisc.RedisComponent).GetClient()
+		rdStore := chat_storage.NewRedisStore(rdClient)
+
 		repo := chat_repo.NewRepo(store)
+		repo.SetRdStore(rdStore)
 
 		biz := chat_biz.NewSyncMessageBiz(repo, channelClient, publisher, logger)
 

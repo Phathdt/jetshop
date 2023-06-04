@@ -2,6 +2,7 @@ package chat_biz
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"jetshop/services/chat_service/internal/modules/chat_mapper"
@@ -15,7 +16,9 @@ import (
 )
 
 type SyncMessageRepo interface {
+	PublishMessage(ctx context.Context, channelCode, threadId string, messages []chat_model.Message) error
 	UpsertMessages(ctx context.Context, data []chat_model.Message) error
+	GetThreadDetail(ctx context.Context, cond map[string]interface{}) (*chat_model.Thread, error)
 }
 
 type SyncMessageChannelRepo interface {
@@ -71,6 +74,15 @@ func (b *syncMessageBiz) Response(ctx context.Context, channelCode, platformThre
 
 	if err = b.publisher.Publish("update_thread", data); err != nil {
 		b.logger.Errorln("publish message update_thread error = ", err)
+	}
+
+	thread, err := b.repo.GetThreadDetail(ctx, map[string]interface{}{"channel_code": channelCode, "platform_thread_id": platformThreadId})
+	if err != nil {
+		return err
+	}
+
+	if err = b.repo.PublishMessage(ctx, channelCode, fmt.Sprintf("%d", thread.Id), messages); err != nil {
+		return err
 	}
 
 	return nil
