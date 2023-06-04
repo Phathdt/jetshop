@@ -25,6 +25,6 @@ type Message struct {
 	AutoReplyId       int                      `json:"auto_reply_id"`
 }
 
-func (m Message) Message() string {
+func (m Message) TableName() string {
 	return "messages"
 }

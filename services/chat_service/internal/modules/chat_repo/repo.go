@@ -11,11 +11,20 @@ type ChatStorage interface {
 	GetThreadDetail(ctx context.Context, cond map[string]interface{}) (*chat_model.Thread, error)
 	ListThread(ctx context.Context, cond map[string]interface{}) ([]chat_model.Thread, error)
 	UpsertThread(ctx context.Context, data []chat_model.Thread) error
+	UpdateThread(ctx context.Context, data []chat_model.Thread) error
 	UpsertMessage(ctx context.Context, data []chat_model.Message) error
+	ListMessage(ctx context.Context, cond map[string]interface{}) ([]chat_model.Message, error)
 }
 
 type repo struct {
 	store ChatStorage
+}
+
+func (r *repo) UpdateThread(ctx context.Context, data []chat_model.Thread) error {
+	ctx, span := tracing.StartTrace(ctx, "repo.update_thread")
+	defer span.End()
+
+	return r.store.UpdateThread(ctx, data)
 }
 
 func NewRepo(store ChatStorage) *repo {
@@ -44,11 +53,15 @@ func (r *repo) UpsertMessages(ctx context.Context, data []chat_model.Message) er
 }
 
 func (r *repo) GetThreadDetail(ctx context.Context, cond map[string]interface{}) (*chat_model.Thread, error) {
-	//TODO implement me
-	panic("implement me")
+	ctx, span := tracing.StartTrace(ctx, "repo.get_thread_detail")
+	defer span.End()
+
+	return r.store.GetThreadDetail(ctx, cond)
 }
 
 func (r *repo) ListMessage(ctx context.Context, cond map[string]interface{}) ([]chat_model.Message, error) {
-	//TODO implement me
-	panic("implement me")
+	ctx, span := tracing.StartTrace(ctx, "repo.list_message")
+	defer span.End()
+
+	return r.store.ListMessage(ctx, cond)
 }

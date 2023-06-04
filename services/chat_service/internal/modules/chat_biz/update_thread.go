@@ -13,7 +13,7 @@ import (
 
 type UpdateThreadRepo interface {
 	GetThreadDetail(ctx context.Context, cond map[string]interface{}) (*chat_model.Thread, error)
-	UpsertThread(ctx context.Context, data []chat_model.Thread) error
+	UpdateThread(ctx context.Context, data []chat_model.Thread) error
 	ListMessage(ctx context.Context, cond map[string]interface{}) ([]chat_model.Message, error)
 }
 
@@ -52,7 +52,7 @@ func (b *updateThreadBiz) Response(ctx context.Context, channelCode, platformThr
 	t := time.Now()
 	thread.UpdatedAt = &t
 
-	if err = b.repo.UpsertThread(ctx, []chat_model.Thread{*thread}); err != nil {
+	if err = b.repo.UpdateThread(ctx, []chat_model.Thread{*thread}); err != nil {
 		return err
 	}
 
@@ -60,6 +60,14 @@ func (b *updateThreadBiz) Response(ctx context.Context, channelCode, platformThr
 }
 
 func (b *updateThreadBiz) initAttrs(thread *chat_model.Thread, latestMessage chat_model.Message, messages []chat_model.Message) {
+	thread.LastMessage = &chat_model.MessageContent{
+		Content:     latestMessage.Content,
+		SendTime:    latestMessage.SendTime,
+		MessageType: latestMessage.MessageType,
+	}
+
+	thread.SendTime = latestMessage.SendTime
+
 	switch latestMessage.FromType {
 	case chat_enums.FromTypeBuyer:
 		thread.FromType = chat_enums.FromTypeBuyer
