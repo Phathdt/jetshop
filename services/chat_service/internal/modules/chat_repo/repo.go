@@ -8,8 +8,9 @@ import (
 )
 
 type ChatStorage interface {
+	GetThreadDetail(ctx context.Context, cond map[string]interface{}) (*chat_model.Thread, error)
 	ListThread(ctx context.Context, cond map[string]interface{}) ([]chat_model.Thread, error)
-	UpsertConversation(ctx context.Context, data []chat_model.Thread) error
+	UpsertThread(ctx context.Context, data []chat_model.Thread) error
 	UpsertMessage(ctx context.Context, data []chat_model.Message) error
 }
 
@@ -32,7 +33,7 @@ func (r *repo) UpsertThread(ctx context.Context, data []chat_model.Thread) error
 	ctx, span := tracing.StartTrace(ctx, "repo.upsert")
 	defer span.End()
 
-	return r.store.UpsertConversation(ctx, data)
+	return r.store.UpsertThread(ctx, data)
 }
 
 func (r *repo) UpsertMessages(ctx context.Context, data []chat_model.Message) error {
@@ -40,4 +41,14 @@ func (r *repo) UpsertMessages(ctx context.Context, data []chat_model.Message) er
 	defer span.End()
 
 	return r.store.UpsertMessage(ctx, data)
+}
+
+func (r *repo) GetThreadDetail(ctx context.Context, cond map[string]interface{}) (*chat_model.Thread, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *repo) ListMessage(ctx context.Context, cond map[string]interface{}) ([]chat_model.Message, error) {
+	//TODO implement me
+	panic("implement me")
 }

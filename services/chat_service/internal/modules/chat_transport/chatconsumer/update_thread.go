@@ -8,13 +8,11 @@ import (
 	"jetshop/services/chat_service/internal/modules/chat_biz"
 	"jetshop/services/chat_service/internal/modules/chat_repo"
 	"jetshop/services/chat_service/internal/modules/chat_storage"
-	"jetshop/shared/appgrpc"
 	"jetshop/shared/common"
 	"jetshop/shared/payloads"
 	"jetshop/shared/sctx"
 	"jetshop/shared/sctx/component/gormc"
 	"jetshop/shared/sctx/component/tracing"
-	"jetshop/shared/sctx/component/watermillapp"
 )
 
 func UpdateThread(sc sctx.ServiceContext) func(msg *message.Message) error {
@@ -30,15 +28,11 @@ func UpdateThread(sc sctx.ServiceContext) func(msg *message.Message) error {
 			return err
 		}
 
-		channelClient := sc.MustGet(common.KeyCompChannelClient).(appgrpc.ChannelClient)
-		publisher := sc.MustGet(common.KeyCompNatsPub).(watermillapp.Publisher)
-		logger := sctx.GlobalLogger().GetLogger("service")
-
 		db := sc.MustGet(common.KeyCompGorm).(gormc.GormComponent).GetDB()
 		store := chat_storage.NewSqlStore(db)
 		repo := chat_repo.NewRepo(store)
 
-		biz := chat_biz.NewPullDetailThreadBiz(repo, channelClient, publisher, logger)
+		biz := chat_biz.NewUpdateThreadBiz(repo)
 
 		if err := biz.Response(ctx, payload.ChannelCode, payload.PlatformThreadId); err != nil {
 			return err

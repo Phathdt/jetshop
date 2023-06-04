@@ -18,6 +18,24 @@ func NewSqlStore(db *gorm.DB) *sqlStore {
 	return &sqlStore{db: db}
 }
 
+func (s *sqlStore) GetThreadDetail(ctx context.Context, cond map[string]interface{}) (*chat_model.Thread, error) {
+	var data chat_model.Thread
+
+	db := s.db.Table(chat_model.Thread{}.TableName()).Where(cond)
+
+	result := db.Limit(1).Find(&data)
+
+	if result.Error != nil {
+		return nil, errors.WithStack(result.Error)
+	}
+
+	if result.RowsAffected == 0 {
+		return nil, errors.WithStack(errors.New("record not found"))
+	}
+
+	return &data, nil
+}
+
 func (s *sqlStore) ListThread(ctx context.Context, cond map[string]interface{}) ([]chat_model.Thread, error) {
 	ctx, span := tracing.StartTrace(ctx, "sql_store.list")
 	defer span.End()
@@ -44,7 +62,7 @@ func (s *sqlStore) ListThread(ctx context.Context, cond map[string]interface{}) 
 	return data, nil
 }
 
-func (s *sqlStore) UpsertConversation(ctx context.Context, data []chat_model.Thread) error {
+func (s *sqlStore) UpsertThread(ctx context.Context, data []chat_model.Thread) error {
 	ctx, span := tracing.StartTrace(ctx, "sql_store.upsert_thread")
 	defer span.End()
 
