@@ -14,14 +14,14 @@ func MapperToThread(thread *response.Thread) (*chat_model.Thread, error) {
 	}
 
 	return &chat_model.Thread{
-		SQLModel:            *core.NewUpsertWithoutIdSQLModel(),
-		ChannelCode:         thread.ChannelCode,
-		PlatformThreadId:    thread.ThreadId,
-		PlatformCustomerId:  thread.CustomerId,
-		CustomerName:        thread.CustomerName,
-		EncodedCustomerName: thread.CustomerName,
-		CustomerAvatarUrl:   thread.CustomerAvatarUrl,
-		UnreadCount:         thread.UnreadCount,
-		PlatformCode:        platformCode,
+		SQLModel:           *core.NewUpsertWithoutIdSQLModel(),
+		ChannelCode:        thread.ChannelCode,
+		PlatformThreadId:   thread.ThreadId,
+		PlatformCustomerId: thread.CustomerId,
+		CustomerName:       thread.CustomerName,
+		//EncodedCustomerName: thread.CustomerName,
+		CustomerAvatarUrl: thread.CustomerAvatarUrl,
+		UnreadCount:       thread.UnreadCount,
+		PlatformCode:      platformCode,
 	}, nil
 }

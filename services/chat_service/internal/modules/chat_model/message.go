@@ -28,3 +28,62 @@ type Message struct {
 func (m Message) TableName() string {
 	return "messages"
 }
+
+func (m Message) ToClient() ClientMessage {
+	var messageType chat_enums.ClientMessageType
+
+	if m.AgentRequest {
+		messageType = chat_enums.ClientMessageTypeSystem
+	} else {
+		switch m.MessageType {
+		case chat_enums.MessageTypeSystem:
+			messageType = chat_enums.ClientMessageTypeSystem
+		case chat_enums.MessageTypeImage:
+			messageType = chat_enums.ClientMessageTypeImage
+		case chat_enums.MessageTypeSticker:
+			messageType = chat_enums.ClientMessageTypeEmoji
+		case chat_enums.MessageTypeProduct:
+			messageType = chat_enums.ClientMessageTypeProduct
+		case chat_enums.MessageTypeProductList:
+			messageType = chat_enums.ClientMessageTypeProductList
+		case chat_enums.MessageTypeOrder:
+			messageType = chat_enums.ClientMessageTypeOrder
+		case chat_enums.MessageTypeVideo:
+			messageType = chat_enums.ClientMessageTypeVideo
+		case chat_enums.MessageTypeVoucher:
+			messageType = chat_enums.ClientMessageTypeVoucher
+		case chat_enums.MessageTypeGeneric:
+			messageType = chat_enums.ClientMessageTypeGeneric
+		case chat_enums.MessageTypeAds:
+			messageType = chat_enums.ClientMessageTypeAds
+		case chat_enums.MessageTypeCarousel:
+			messageType = chat_enums.ClientMessageTypeCarousel
+		case chat_enums.MessageTypeTrigger:
+			messageType = chat_enums.ClientMessageTypeSystem
+		default:
+			messageType = chat_enums.ClientMessageTypeText
+		}
+	}
+
+	var status chat_enums.ClientMessageStatus
+	switch m.Status {
+	case chat_enums.MessageStatusReceived:
+		status = chat_enums.ClientMessageStatusEdited
+	case chat_enums.MessageStatusDeleted:
+		status = chat_enums.ClientMessageStatusDeleted
+	default:
+		status = chat_enums.ClientMessageStatusSent
+	}
+	return ClientMessage{
+		Id:                m.Id,
+		SendTime:          m.SendTime,
+		SentByUserId:      m.SentByUserId,
+		Content:           m.Content,
+		PlatformMessageId: m.PlatformMessageId,
+		MessageType:       messageType,
+		FromType:          m.FromType,
+		Status:            status,
+		PlatformId:        m.PlatformMessageId,
+		Platform:          m.PlatformCode,
+	}
+}
