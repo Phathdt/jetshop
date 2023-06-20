@@ -47,21 +47,6 @@ services:
       - "3200:3200"
       - "4317:4317"
 
-  prometheus:
-    image: prom/prometheus:v2.39.2
-    command:
-      - --config.file=/etc/prometheus.yaml
-      - --web.enable-remote-write-receiver
-      - --enable-feature=exemplar-storage
-    volumes:
-      - ./config/prometheus.yaml:/etc/prometheus.yaml
-    ports:
-      - "9090:9090"
-    healthcheck:
-      interval: 5s
-      retries: 10
-      test: wget --no-verbose --tries=1 --spider http://localhost:9090/status || exit 1
-
   grafana:
     image: grafana/grafana:9.2.2
     container_name: grafana
