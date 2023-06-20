@@ -61,9 +61,11 @@ var rootCmd = &cobra.Command{
 		ginComp := serviceCtx.MustGet(common.KeyCompGIN).(ginc.GinComponent)
 
 		router := ginComp.GetRouter()
-		router.Use(gin.Recovery(), gin.Logger(), smdlw.Recovery(serviceCtx), otelgin.Middleware(serviceName))
+		router.Use(gin.Recovery(), smdlw.Recovery(serviceCtx), otelgin.Middleware(serviceName), smdlw.Logger())
 
 		router.GET("/ping", func(c *gin.Context) {
+			_, span := tracing.StartTrace(c.Request.Context(), "demo")
+			defer span.End()
 			c.JSON(http.StatusOK, gin.H{"data": "pong"})
 		})
 

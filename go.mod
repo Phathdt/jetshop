@@ -6,6 +6,7 @@ require (
 	github.com/ThreeDotsLabs/watermill v1.2.0
 	github.com/ThreeDotsLabs/watermill-jetstream v0.0.6
 	github.com/facebookgo/flagenv v0.0.0-20160425205200-fcd59fca7456
+	github.com/gin-contrib/logger v0.2.5
 	github.com/gin-gonic/gin v1.9.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0-rc.5
@@ -21,11 +22,11 @@ require (
 	github.com/redis/go-redis/extra/redisotel/v9 v9.0.5
 	github.com/redis/go-redis/v9 v9.0.5
 	github.com/robfig/cron v1.2.0
+	github.com/rs/zerolog v1.28.0
 	github.com/samber/lo v1.38.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.7.0
 	github.com/uptrace/opentelemetry-go-extra/otelgorm v0.2.1
-	go.opencensus.io v0.23.0
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.41.1
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.42.0
 	go.opentelemetry.io/otel v1.16.0
@@ -104,7 +105,6 @@ require (
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/goccy/go-json v0.10.0 // indirect
 	github.com/gofrs/flock v0.8.1 // indirect
-	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golangci/check v0.0.0-20180506172741-cfe4005ccda2 // indirect
