@@ -6,13 +6,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/gin-gonic/gin"
-	"github.com/spf13/cobra"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
-	"google.golang.org/grpc"
 	"jetshop/services/channel_service/internal/modules/channel/channel_stranport/channel_grpc"
 	"jetshop/shared/common"
-	"jetshop/shared/proto/out/proto"
+	jetshop_proto "jetshop/shared/proto/out/proto"
 	sctx "jetshop/shared/sctx"
 	"jetshop/shared/sctx/component/discovery/consul"
 	"jetshop/shared/sctx/component/ginc"
@@ -20,6 +16,11 @@ import (
 	"jetshop/shared/sctx/component/gormc"
 	"jetshop/shared/sctx/component/grpcserverc"
 	"jetshop/shared/sctx/component/tracing"
+
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/cobra"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+	"google.golang.org/grpc"
 )
 
 const (
@@ -33,7 +34,7 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithComponent(ginc.NewGin(common.KeyCompGIN)),
 		sctx.WithComponent(gormc.NewGormDB(common.KeyCompGorm, "")),
 		sctx.WithComponent(consul.NewConsulComponent(common.KeyCompConsul, serviceName, version, 3000)),
-		sctx.WithComponent(tracing.NewTracingClient(common.KeyCompJaeger, serviceName)),
+		sctx.WithComponent(tracing.NewTracingClient(common.KeyCompJaeger, serviceName, version)),
 		sctx.WithComponent(grpcserverc.NewGrpcServer(common.KeyCompGrpcServer)),
 	)
 }

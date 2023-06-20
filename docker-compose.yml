@@ -27,14 +27,54 @@ services:
     ports:
       - 8500:8500
 
-  jaeger:
-    image: jaegertracing/all-in-one:latest
+  collector:
+    image: otel/opentelemetry-collector:0.79.0
+    command: ["--config=/etc/collector-config.yaml"]
+    volumes:
+      - ./config/collector-config.yaml:/etc/collector-config.yaml
     ports:
-      - "16686:16686"
-      - "14268:14268"
+      - "5555:5555"
+      - "6666:6666"
+
+  tempo:
+    image: grafana/tempo:1.5.0
+    command: [ "-search.enabled=true", "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./config/tempo-config.yaml:/etc/tempo.yaml
+      - ./config/tempo-overrides.yaml:/etc/overrides.yaml
+      - ./tempo-data:/tmp/tempo
+    ports:
+      - "3200:3200"
+      - "4317:4317"
+
+  prometheus:
+    image: prom/prometheus:v2.39.2
+    command:
+      - --config.file=/etc/prometheus.yaml
+      - --web.enable-remote-write-receiver
+      - --enable-feature=exemplar-storage
+    volumes:
+      - ./config/prometheus.yaml:/etc/prometheus.yaml
+    ports:
+      - "9090:9090"
+    healthcheck:
+      interval: 5s
+      retries: 10
+      test: wget --no-verbose --tries=1 --spider http://localhost:9090/status || exit 1
+
+  grafana:
+    image: grafana/grafana:9.2.2
+    container_name: grafana
+    hostname: grafana
+    volumes:
+      - ./config/grafana-bootstrap.ini:/etc/grafana/grafana.ini
+      - ./config/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
     environment:
-      - COLLECTOR_OTLP_ENABLED=true
-      - LOG_LEVEL=debug
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    ports:
+      - "3000:3000"
 
   channel_service:
     build:
@@ -42,8 +82,10 @@ services:
     environment:
       DB_DSN: ${DB_DSN}
       CONSUL_HOST: consul:8500
-      JAEGER_HOST: http://jaeger:14268/api/traces
+      COLLECTOR_HOST: collector:5555
       REDIS_URI: redis://redis-db:6379
+    ports:
+      - 13000:3000
 
   chat_scheduler:
     build:
@@ -51,7 +93,7 @@ services:
     environment:
       DB_DSN: postgresql://postgres:123123123@chat_db/chat_db?sslmode=disable
       CONSUL_HOST: consul:8500
-      JAEGER_HOST: http://jaeger:14268/api/traces
+      COLLECTOR_HOST: collector:5555
       REDIS_URI: redis://redis-db:6379
       NATS_PUB_URI: ${NATS_URI}
 
@@ -61,7 +103,7 @@ services:
     environment:
       DB_DSN: postgresql://postgres:123123123@chat_db/chat_db?sslmode=disable
       CONSUL_HOST: consul:8500
-      JAEGER_HOST: http://jaeger:14268/api/traces
+      COLLECTOR_HOST: collector:5555
       REDIS_URI: redis://redis-db:6379
       NATS_SUB_URI: ${NATS_URI}
       NATS_PUB_URI: ${NATS_URI}
@@ -75,7 +117,7 @@ services:
     environment:
       DB_DSN: postgresql://postgres:123123123@chat_db/chat_db?sslmode=disable
       CONSUL_HOST: consul:8500
-      JAEGER_HOST: http://jaeger:14268/api/traces
+      COLLECTOR_HOST: collector:5555
       REDIS_URI: redis://redis-db:6379
       NATS_SUB_URI: ${NATS_URI}
       NATS_PUB_URI: ${NATS_URI}
@@ -89,7 +131,7 @@ services:
     environment:
       DB_DSN: postgresql://postgres:123123123@chat_db/chat_db?sslmode=disable
       CONSUL_HOST: consul:8500
-      JAEGER_HOST: http://jaeger:14268/api/traces
+      COLLECTOR_HOST: collector:5555
       REDIS_URI: redis://redis-db:6379
       NATS_SUB_URI: ${NATS_URI}
       NATS_PUB_URI: ${NATS_URI}

@@ -4,27 +4,30 @@ import (
 	"context"
 	"flag"
 
+	"jetshop/shared/sctx"
+
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/exporters/jaeger"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.12.0"
-	"jetshop/shared/sctx"
 )
 
 type tracingClient struct {
-	id          string
-	serviceName string
-	jaegerHost  string
-	logger      sctx.Logger
-	tp          *tracesdk.TracerProvider
+	id            string
+	serviceName   string
+	version       string
+	collectorHost string
+	logger        sctx.Logger
+	tp            *tracesdk.TracerProvider
 }
 
-func NewTracingClient(id string, serviceName string) *tracingClient {
+func NewTracingClient(id string, serviceName string, version string) *tracingClient {
 	tracer = otel.Tracer(serviceName)
 
-	return &tracingClient{id: id, serviceName: serviceName}
+	return &tracingClient{id: id, serviceName: serviceName, version: version}
 }
 
 func (t *tracingClient) ID() string {
@@ -32,23 +35,32 @@ func (t *tracingClient) ID() string {
 }
 
 func (t *tracingClient) InitFlags() {
-	flag.StringVar(&t.jaegerHost, "jaeger_host", "http://localhost:14268/api/traces", "jaeger host")
+	flag.StringVar(&t.collectorHost, "collector_host", "localhost:5555", "collector host")
 }
 
 func (t *tracingClient) Activate(sc sctx.ServiceContext) error {
 	t.logger = sc.Logger(t.id)
 
-	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(t.jaegerHost)))
+	ctx := context.Background()
+
+	exporter, err := otlptrace.New(ctx, otlptracegrpc.NewClient(
+		otlptracegrpc.WithEndpoint(t.collectorHost),
+		otlptracegrpc.WithInsecure(),
+	))
+
 	if err != nil {
 		return err
 	}
 
+	resource := resource.NewWithAttributes(
+		semconv.SchemaURL,
+		semconv.ServiceNameKey.String(t.serviceName),
+		semconv.ServiceVersionKey.String(t.version),
+	)
+
 	t.tp = tracesdk.NewTracerProvider(
-		tracesdk.WithBatcher(exp),
-		tracesdk.WithResource(resource.NewWithAttributes(
-			semconv.SchemaURL,
-			semconv.ServiceNameKey.String(t.serviceName),
-		)),
+		tracesdk.WithBatcher(exporter),
+		tracesdk.WithResource(resource),
 	)
 
 	otel.SetTracerProvider(t.tp)

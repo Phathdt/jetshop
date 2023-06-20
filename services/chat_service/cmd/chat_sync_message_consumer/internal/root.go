@@ -6,9 +6,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/gin-gonic/gin"
-	"github.com/spf13/cobra"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"jetshop/services/chat_service/internal/modules/chat_transport/chatconsumer"
 	"jetshop/shared/appgrpc"
 	"jetshop/shared/common"
@@ -22,6 +19,10 @@ import (
 	"jetshop/shared/sctx/component/watermillapp"
 	"jetshop/shared/sctx/component/watermillapp/natspub"
 	"jetshop/shared/sctx/component/watermillapp/natsrouter"
+
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/cobra"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
 const (
@@ -35,7 +36,7 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithComponent(ginc.NewGin(common.KeyCompGIN)),
 		sctx.WithComponent(gormc.NewGormDB(common.KeyCompGorm, "")),
 		sctx.WithComponent(consul.NewConsulComponent(common.KeyCompConsul, serviceName, version, 3000)),
-		sctx.WithComponent(tracing.NewTracingClient(common.KeyCompJaeger, serviceName)),
+		sctx.WithComponent(tracing.NewTracingClient(common.KeyCompJaeger, serviceName, version)),
 		sctx.WithComponent(appgrpc.NewChannelClient(common.KeyCompChannelClient)),
 		sctx.WithComponent(natsrouter.NewNatsRouter(common.KeyCompNatsSub)),
 		sctx.WithComponent(natspub.NewNatsPub(common.KeyCompNatsPub)),
