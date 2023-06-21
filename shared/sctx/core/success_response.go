@@ -7,6 +7,7 @@ type successResponse struct {
 }
 
 func SuccessResponse(data, paging, extra interface{}) *successResponse {
+
 	return &successResponse{Data: data, Paging: paging, Extra: extra}
 }
 

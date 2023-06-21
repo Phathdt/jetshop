@@ -16,6 +16,7 @@ import (
 	"jetshop/shared/sctx/component/gormc"
 	"jetshop/shared/sctx/component/grpcserverc"
 	"jetshop/shared/sctx/component/tracing"
+	"jetshop/shared/sctx/core"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
@@ -61,12 +62,13 @@ var rootCmd = &cobra.Command{
 		ginComp := serviceCtx.MustGet(common.KeyCompGIN).(ginc.GinComponent)
 
 		router := ginComp.GetRouter()
-		router.Use(gin.Recovery(), smdlw.Recovery(serviceCtx), otelgin.Middleware(serviceName), smdlw.Logger())
+
+		router.Use(gin.Recovery(), smdlw.Recovery(serviceCtx), otelgin.Middleware(serviceName), smdlw.Traceable(), smdlw.Logger())
 
 		router.GET("/ping", func(c *gin.Context) {
 			_, span := tracing.StartTrace(c.Request.Context(), "demo")
 			defer span.End()
-			c.JSON(http.StatusOK, gin.H{"data": "pong"})
+			c.JSON(http.StatusOK, core.ResponseData("ok"))
 		})
 
 		if err := router.Run(fmt.Sprintf(":%d", ginComp.GetPort())); err != nil {
